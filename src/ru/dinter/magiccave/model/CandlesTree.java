@@ -28,5 +28,9 @@ public final class CandlesTree {
     public boolean[] solve() {
         return solution.clone();
     }
+
+    public CandleModel[] getCandles() {
+        return candles;
+    }
     
 }

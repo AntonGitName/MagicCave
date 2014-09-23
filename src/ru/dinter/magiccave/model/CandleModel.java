@@ -14,8 +14,8 @@ public final class CandleModel {
         }
     }
     
-    private final double x;
-    private final double y;
+    private final float x;
+    private final float y;
     
     private List<CandleModel> neighbours = new ArrayList<>();
     private CandleState state;
@@ -24,8 +24,8 @@ public final class CandleModel {
     
     public CandleModel() {
         this.state = CandleState.ON;
-        x = RND.nextDouble();
-        y = RND.nextDouble();
+        x = RND.nextFloat();
+        y = RND.nextFloat();
     }
 
     public CandleState getState() {
@@ -100,6 +100,14 @@ public final class CandleModel {
         if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y))
             return false;
         return true;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
     }
     
     
