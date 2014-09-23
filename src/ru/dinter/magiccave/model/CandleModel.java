@@ -32,10 +32,6 @@ public final class CandleModel {
         return state;
     }
 
-    public void setState(CandleState state) {
-        this.state = state;
-    }
-
     public void invertState() {
         state = state.inverted();
     }
@@ -51,25 +47,6 @@ public final class CandleModel {
         return neighbours;
     }
 
-    public void setNeighbours(List<CandleModel> neighbours) {
-        this.neighbours = neighbours;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result
-                + ((neighbours == null) ? 0 : neighbours.hashCode());
-        result = prime * result + ((state == null) ? 0 : state.hashCode());
-        long temp;
-        temp = Double.doubleToLongBits(x);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(y);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        return result;
-    }
-
     public double distanceTo(CandleModel other) {
         return (x - other.x) * (x - other.x) + (y - other.y) * (y - other.y);
     }
@@ -77,29 +54,6 @@ public final class CandleModel {
     public void connect(CandleModel other) {
         neighbours.add(other);
         other.neighbours.add(this);
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        CandleModel other = (CandleModel) obj;
-        if (neighbours == null) {
-            if (other.neighbours != null)
-                return false;
-        } else if (!neighbours.equals(other.neighbours))
-            return false;
-        if (state != other.state)
-            return false;
-        if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))
-            return false;
-        if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y))
-            return false;
-        return true;
     }
 
     public float getX() {
