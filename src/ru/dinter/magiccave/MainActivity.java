@@ -1,16 +1,45 @@
 package ru.dinter.magiccave;
 
-import android.support.v7.app.ActionBarActivity;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import ru.dinter.magiccave.IO.ResourceLoader;
+import ru.dinter.magiccave.view.CandleView;
+import ru.dinter.magiccave.view.CaveView;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends ActionBarActivity {
 
+    private static final int UPDATE_RATE = 1000 / 30;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        ResourceLoader.setResources(getResources());
+        CandleView.loadBitmaps(ResourceLoader.newInstance());
+        
+        final CaveView caveView = (CaveView) findViewById(R.id.caveView1);
+        final Handler handler = new Handler();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    
+                    @Override
+                    public void run() {
+                        caveView.invalidate();
+                    }
+                });
+            }
+        }, 0, UPDATE_RATE);
     }
 
     @Override

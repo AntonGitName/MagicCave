@@ -6,46 +6,44 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class CaveView extends View {
 
+    private Paint backgroundPaint;
+
+    private Paint candlePaint;
+    
+    private CandleGraphView candles;
+    
+    private int height;
+
+    private Paint linePaint;
+    private int width;
     public CaveView(Context context, AttributeSet attrs) {
         super(context, attrs);
         
         init();
     }
-
     private void init() {
         backgroundPaint = new Paint();
         backgroundPaint.setColor(Color.BLACK);
         backgroundPaint.setStyle(Style.FILL);
-        candlePaint = new Paint();
-        candlePaint.setColor(Color.YELLOW);
-        candlePaint.setStyle(Style.FILL);
         linePaint = new Paint();
         linePaint.setColor(Color.RED);
         linePaint.setStyle(Style.FILL);
         linePaint.setStrokeWidth(3);
-        candles = new CandlesView();
+        candles = new CandleGraphView();
     }
-    
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         
         canvas.drawRect(0, 0, width, height, backgroundPaint);
         
-        candles.draw(canvas, candlePaint, linePaint, width, height);
+        candles.draw(canvas, linePaint, width, height);
     }
-
-    private Paint backgroundPaint;
-    private Paint candlePaint;
-    private Paint linePaint;
-    private int width;
-    private int height;
-    private CandlesView candles;
-    
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -53,7 +51,19 @@ public class CaveView extends View {
         height = h;
         
     }
+    
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        float x = event.getX() / width;
+        float y = event.getY() / height;
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_UP:
+        }
+        candles.clickXY(x, y);
+        invalidate();
+    return false;
+    }
 
-    
-    
 }

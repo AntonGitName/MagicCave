@@ -2,19 +2,23 @@ package ru.dinter.magiccave.model;
 
 import java.util.Random;
 
-public final class CandlesTree {
+public final class CandleGraph {
     
-    public CandlesTree(CandleModel candles[]) {
+    private static final Random RND = new Random();
+
+    private static final int SHUFFLE_RATE = 1000;
+    private final CandleModel candles[];
+    
+    private final boolean solution[];
+    public CandleGraph(CandleModel candles[]) {
         super();
         this.candles = candles;
         solution = new boolean[candles.length];
     }
-
-    private final CandleModel candles[];
-    private final boolean solution[];
     
-    private static final int SHUFFLE_RATE = 1000;
-    private static final Random RND = new Random();
+    public CandleModel[] getCandles() {
+        return candles;
+    }
     
     public void shuffle() {
         int n;
@@ -24,13 +28,9 @@ public final class CandlesTree {
             solution[n] ^= true;
         }
     }
-    
+
     public boolean[] solve() {
         return solution.clone();
-    }
-
-    public CandleModel[] getCandles() {
-        return candles;
     }
     
 }

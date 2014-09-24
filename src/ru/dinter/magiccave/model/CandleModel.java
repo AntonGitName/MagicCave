@@ -7,33 +7,36 @@ import java.util.Random;
 public final class CandleModel {
 
     public enum CandleState {
-        ON, OFF;
+        OFF, ON;
         
         public CandleState inverted() {
             return (this.equals(ON)) ? OFF : ON;
         }
     }
     
+    private List<CandleModel> neighbours = new ArrayList<>();
+    
+    private CandleState state;
     private final float x;
     private final float y;
     
-    private List<CandleModel> neighbours = new ArrayList<>();
-    private CandleState state;
-    
-    private static final Random RND = new Random();
-    
-    public CandleModel() {
+    public CandleModel(float x, float y) {
         this.state = CandleState.ON;
-        x = RND.nextFloat();
-        y = RND.nextFloat();
+        this.x = x;
+        this.y = y;
     }
 
-    public CandleState getState() {
-        return state;
+    public void connect(CandleModel other) {
+        neighbours.add(other);
+        other.neighbours.add(this);
     }
 
-    public void invertState() {
-        state = state.inverted();
+    public float distanceTo(CandleModel other) {
+        return (x - other.x) * (x - other.x) + (y - other.y) * (y - other.y);
+    }
+    
+    public float distanceTo(float x, float y) {
+        return (x - this.x) * (x - this.x) + (y - this.y) * (y - this.y);
     }
     
     public void forceInvertState() {
@@ -42,26 +45,25 @@ public final class CandleModel {
             candle.invertState();
         }
     }
-    
+
     public List<CandleModel> getNeighbours() {
         return neighbours;
     }
-
-    public double distanceTo(CandleModel other) {
-        return (x - other.x) * (x - other.x) + (y - other.y) * (y - other.y);
+    
+    public CandleState getState() {
+        return state;
     }
     
-    public void connect(CandleModel other) {
-        neighbours.add(other);
-        other.neighbours.add(this);
-    }
-
     public float getX() {
         return x;
     }
 
     public float getY() {
         return y;
+    }
+
+    public void invertState() {
+        state = state.inverted();
     }
     
     
