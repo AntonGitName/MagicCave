@@ -2,6 +2,9 @@
 <resources>
 
     <string name="app_name">MagicCave</string>
-    <string name="action_settings">Settings</string>
+    
+    <string name="choose_level_btn">Choose level</string>
+    <string name="rules_btn">Rules</string>
+    <string name="quit_btn">Quit</string>
 
 </resources>

@@ -8,18 +8,18 @@ public final class CandleModel {
 
     public enum CandleState {
         OFF, ON;
-        
+
         public CandleState inverted() {
             return (this.equals(ON)) ? OFF : ON;
         }
     }
-    
+
     private List<CandleModel> neighbours = new ArrayList<>();
-    
+
     private CandleState state;
     private final float x;
     private final float y;
-    
+
     public CandleModel(float x, float y) {
         this.state = CandleState.ON;
         this.x = x;
@@ -34,11 +34,11 @@ public final class CandleModel {
     public float distanceTo(CandleModel other) {
         return (x - other.x) * (x - other.x) + (y - other.y) * (y - other.y);
     }
-    
+
     public float distanceTo(float x, float y) {
         return (x - this.x) * (x - this.x) + (y - this.y) * (y - this.y);
     }
-    
+
     public void forceInvertState() {
         state = state.inverted();
         for (CandleModel candle : neighbours) {
@@ -49,11 +49,11 @@ public final class CandleModel {
     public List<CandleModel> getNeighbours() {
         return neighbours;
     }
-    
+
     public CandleState getState() {
         return state;
     }
-    
+
     public float getX() {
         return x;
     }
@@ -65,6 +65,5 @@ public final class CandleModel {
     public void invertState() {
         state = state.inverted();
     }
-    
-    
+
 }

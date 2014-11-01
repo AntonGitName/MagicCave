@@ -12,8 +12,9 @@ import java.util.TreeSet;
 public final class CandleGraphBuilder {
 
     private static final int MAX_NEIGHBOUR_RAND = 4;
-    
+
     private static final Random RND = new Random();
+
     private static void connect(CandleModel[] candles, int toAdd) {
         int bestI = 0;
         int bestJ = toAdd;
@@ -34,14 +35,14 @@ public final class CandleGraphBuilder {
         candles[bestJ] = candles[toAdd];
         candles[toAdd] = tmp;
     }
-    
+
     public static CandleGraph createRandom(int n) {
         CandleModel[] candles = new CandleModel[n];
-        
+
         Set<Integer> rects = new TreeSet<>();
         while (rects.size() < n) {
             int k = RND.nextInt(n * n);
-            if (k % n == 0 || k / n == 0 || k % n == n-1 || k / n == n-1) {
+            if (k % n == 0 || k / n == 0 || k % n == n - 1 || k / n == n - 1) {
                 continue;
             }
             rects.add(k);
@@ -58,13 +59,13 @@ public final class CandleGraphBuilder {
         for (int i = 1; i < n; ++i) {
             connect(candles, i);
         }
-        
+
         for (int i = 0; i < n; ++i) {
             List<CandleModel> nearestCandles = new ArrayList<>();
             for (int j = i + 1; j < n; ++j) {
                 nearestCandles.add(candles[j]);
             }
-            final CandleModel curCandle = candles[i]; 
+            final CandleModel curCandle = candles[i];
             Collections.sort(nearestCandles, new Comparator<CandleModel>() {
 
                 @Override
@@ -79,8 +80,8 @@ public final class CandleGraphBuilder {
                 }
             }
         }
-        
+
         return new CandleGraph(candles);
     }
-    
+
 }

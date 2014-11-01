@@ -1,49 +1,55 @@
 package ru.dinter.magiccave.IO;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import ru.dinter.magiccave.R;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
-import ru.dinter.magiccave.R;
+import android.graphics.Point;
+import android.util.Log;
 
 public class ResourceLoader {
 
+    private static final String TAG = "ResourceLoader";
+
+    private final Bitmap candleBitmap;
+    private final float candleSizeRate;
+    private final Map<Point, Bitmap> candleBitmapScaled = new HashMap<>();
+
+    private static final int[] fireBitmapsIDs = { R.drawable.fire1, R.drawable.fire2, R.drawable.fire3,
+            R.drawable.fire4, R.drawable.fire5, R.drawable.fire6, R.drawable.fire7, R.drawable.fire8, R.drawable.fire9,
+            R.drawable.fire10, R.drawable.fire11, R.drawable.fire12, R.drawable.fire13, R.drawable.fire14,
+            R.drawable.fire15 };
+
+    private final Bitmap[] fireBitmaps;
+    private final float fireSizeRate;
+    private final Map<Point, Bitmap[]> fireBitmapsScaled = new HashMap<>();
+
     private static ResourceLoader instance = null;
-    private static Resources resources = null;
     
-    private static Bitmap candleBitmap;
-    
-    private static final int FIRE_BITMAPS = 15;
-    private static final Bitmap[] fireBitmaps = new Bitmap[FIRE_BITMAPS];
-    
-    private ResourceLoader() {
-        candleBitmap = BitmapFactory.decodeResource(resources, R.drawable.candle);
-        fireBitmaps[0] = BitmapFactory.decodeResource(resources, R.drawable.fire1);
-        fireBitmaps[1] = BitmapFactory.decodeResource(resources, R.drawable.fire2);
-        fireBitmaps[2] = BitmapFactory.decodeResource(resources, R.drawable.fire3);
-        fireBitmaps[3] = BitmapFactory.decodeResource(resources, R.drawable.fire4);
-        fireBitmaps[4] = BitmapFactory.decodeResource(resources, R.drawable.fire5);
-        fireBitmaps[5] = BitmapFactory.decodeResource(resources, R.drawable.fire6);
-        fireBitmaps[6] = BitmapFactory.decodeResource(resources, R.drawable.fire7);
-        fireBitmaps[7] = BitmapFactory.decodeResource(resources, R.drawable.fire8);
-        fireBitmaps[8] = BitmapFactory.decodeResource(resources, R.drawable.fire9);
-        fireBitmaps[9] = BitmapFactory.decodeResource(resources, R.drawable.fire10);
-        fireBitmaps[10] = BitmapFactory.decodeResource(resources, R.drawable.fire11);
-        fireBitmaps[11] = BitmapFactory.decodeResource(resources, R.drawable.fire12);
-        fireBitmaps[12] = BitmapFactory.decodeResource(resources, R.drawable.fire13);
-        fireBitmaps[13] = BitmapFactory.decodeResource(resources, R.drawable.fire14);
-        fireBitmaps[14] = BitmapFactory.decodeResource(resources, R.drawable.fire15);
-    }
-    
-    public static ResourceLoader newInstance() {
+    /*
+     * Works fine only if used in exactly one activity!
+     */
+    public static ResourceLoader newInstance(Resources resources) {
         if (instance == null) {
-            instance = new ResourceLoader();
+            instance = new ResourceLoader(resources);
         }
         return instance;
     }
     
-    public static void setResources(Resources resources) {
-        ResourceLoader.resources = resources;
+    private ResourceLoader(Resources resources) {
+        
+        Log.d(TAG, "Resource loader created");
+        
+        candleBitmap = BitmapFactory.decodeResource(resources, R.drawable.candle);
+        candleSizeRate = (float) candleBitmap.getWidth() / (float) candleBitmap.getHeight();
+        fireBitmaps = new Bitmap[fireBitmapsIDs.length];
+        for (int i = 0; i < fireBitmapsIDs.length; ++i) {
+            fireBitmaps[i] = BitmapFactory.decodeResource(resources, fireBitmapsIDs[i]);
+        }
+        fireSizeRate = (float) fireBitmaps[0].getWidth() / (float) fireBitmaps[0].getHeight();
     }
 
     public Bitmap getCandleBitmap() {
@@ -52,5 +58,32 @@ public class ResourceLoader {
 
     public Bitmap[] getFireBitmaps() {
         return fireBitmaps;
+    }
+
+    public Bitmap getCandleBitmap(Point size) {
+        Point adjustedSize = new Point(Math.min(size.x, (int) (candleSizeRate * size.y)), Math.min(size.y,
+                (int) (size.x / candleSizeRate)));
+        if (!candleBitmapScaled.containsKey(adjustedSize)) {
+            Log.d(TAG, "Loading candle bitmap with size: " + adjustedSize);
+            Log.d(TAG, "hash: " + adjustedSize.hashCode());
+            Bitmap bm = Bitmap.createScaledBitmap(candleBitmap, adjustedSize.x, adjustedSize.y, false);
+            candleBitmapScaled.put(adjustedSize, bm);
+            return bm;
+        }
+        return candleBitmapScaled.get(adjustedSize);
+    }
+
+    public Bitmap[] getFireBitmaps(Point size) {
+        Point adjustedSize = new Point(Math.min(size.x, (int) (fireSizeRate * size.y)), Math.min(size.y,
+                (int) (size.x / fireSizeRate)));
+        if (!fireBitmapsScaled.containsKey(adjustedSize)) {
+            Bitmap[] fireBitmapsS = new Bitmap[fireBitmaps.length];
+            for (int i = 0; i < fireBitmaps.length; ++i) {
+                fireBitmapsS[i] = Bitmap.createScaledBitmap(fireBitmaps[i], adjustedSize.x, adjustedSize.y, false);
+            }
+            fireBitmapsScaled.put(adjustedSize, fireBitmapsS);
+            return fireBitmapsS;
+        }
+        return fireBitmapsScaled.get(adjustedSize);
     }
 }
