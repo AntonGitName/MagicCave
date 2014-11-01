@@ -1,7 +1,7 @@
 package ru.dinter.magiccave;
 
 import ru.dinter.magiccave.IO.ResourceLoader;
-import ru.dinter.magiccave.fragments.MainMenuFragment;
+import ru.dinter.magiccave.UI.MainMenuFragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 

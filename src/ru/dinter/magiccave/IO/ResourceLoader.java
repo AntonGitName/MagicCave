@@ -65,7 +65,6 @@ public class ResourceLoader {
                 (int) (size.x / candleSizeRate)));
         if (!candleBitmapScaled.containsKey(adjustedSize)) {
             Log.d(TAG, "Loading candle bitmap with size: " + adjustedSize);
-            Log.d(TAG, "hash: " + adjustedSize.hashCode());
             Bitmap bm = Bitmap.createScaledBitmap(candleBitmap, adjustedSize.x, adjustedSize.y, false);
             candleBitmapScaled.put(adjustedSize, bm);
             return bm;

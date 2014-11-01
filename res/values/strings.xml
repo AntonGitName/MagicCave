@@ -2,9 +2,14 @@
 <resources>
 
     <string name="app_name">MagicCave</string>
-    
     <string name="choose_level_btn">Choose level</string>
     <string name="rules_btn">Rules</string>
     <string name="quit_btn">Quit</string>
+    <string name="task_label">The Task</string>
+    <string name="task_text">blah-blah-blah</string>
+    <string name="modes_label">Game modes</string>
+    <string name="modes_text">You can choose between two different modes: the cave mode and the random mode. In the first one you will have to solve puzzles from four different caves in order to get magic stars!=) In the second mode you will have a chance to try your best on a randomly generated puzzle. Be aware these puzzles might be not that simple to crack!</string>
+    <string name="control_label">Controls</string>
+    <string name="control_text">bla-blah-blah</string>
 
 </resources>
