@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
     android:layout_weight="0.5"
+    android:background="@drawable/rules_background"
     android:gravity="center" >
 
     <TableRow android:gravity="center" >
