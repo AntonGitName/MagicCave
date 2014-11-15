@@ -16,11 +16,18 @@ public class MainMenuFragment extends Fragment {
 
     private static final String TAG = "MainMenuFragment";
 
+    private View rootView;
 
     private Button chsLvlButton;
     private Button rulesButton;
     private Button quitButton;
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    	rootView = inflater.inflate(R.layout.main_menu_layout, container, false);
+    	return rootView;
+    }
+    
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -28,14 +35,14 @@ public class MainMenuFragment extends Fragment {
         Log.d(TAG, "Setting up main menu buttons");
         
         ResourceLoader rl = ((MainActivity) getActivity()).RESOURCE_LOADER;
-        BigCandleView bigCandleView = (BigCandleView) getActivity().findViewById(R.id.bigCandleView1);
+        BigCandleView bigCandleView = (BigCandleView) rootView.findViewById(R.id.bigCandleView1);
         bigCandleView.setResources(rl);
-        bigCandleView = (BigCandleView) getActivity().findViewById(R.id.bigCandleView2);
+        bigCandleView = (BigCandleView) rootView.findViewById(R.id.bigCandleView2);
         bigCandleView.setResources(rl);
 
-        quitButton = (Button) getActivity().findViewById(R.id.quit_btn);
-        chsLvlButton = (Button) getActivity().findViewById(R.id.choose_level_btn);
-        rulesButton = (Button) getActivity().findViewById(R.id.rules_btn);
+        quitButton = (Button) rootView.findViewById(R.id.quit_btn);
+        chsLvlButton = (Button) rootView.findViewById(R.id.choose_level_btn);
+        rulesButton = (Button) rootView.findViewById(R.id.rules_btn);
 
         quitButton.setOnClickListener(new View.OnClickListener() {
 
@@ -49,20 +56,12 @@ public class MainMenuFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                getFragmentManager().beginTransaction().replace(android.R.id.content, new RulesPageFragment())
+                getFragmentManager().beginTransaction().replace(R.id.container, new RulesPageFragment())
                         .addToBackStack(null).commit();
             }
         });
         
         // TODO
         chsLvlButton.getContext();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (container == null) {
-            return null;
-        }
-        return inflater.inflate(R.layout.main_menu_layout, container, false);
     }
 }

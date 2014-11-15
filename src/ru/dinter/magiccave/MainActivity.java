@@ -15,6 +15,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         
         RESOURCE_LOADER = ResourceLoader.newInstance(getResources());
         
@@ -25,7 +26,7 @@ public class MainActivity extends FragmentActivity {
 
     private void startFragment() {
         getSupportFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new MainMenuFragment(), MENU_FRAGMENT_TAG).commit();
+                .replace(R.id.container, new MainMenuFragment(), MENU_FRAGMENT_TAG).commit();
 
     }
 }

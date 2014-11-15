@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@drawable/rules_background"
+    android:gravity="center"
+    android:weightSum="200" >
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="top|center_horizontal"
+        android:layout_weight="20" >
+
+        <TextView
+            android:id="@+id/rules_page_label"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="top|center_horizontal"
+            android:gravity="center_horizontal"
+            android:text="LABEL"
+            android:textColor="#4169E1"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:weightSum="130"
+        android:layout_weight="130"
+        android:gravity="top|center_horizontal" >
+
+        <TextView
+            android:id="@+id/rules_page_text"
+            android:layout_weight="100"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text."
+            android:textColor="#6B8E23"
+            android:textStyle="italic" />
+
+    </TableRow>
+
+</TableLayout>

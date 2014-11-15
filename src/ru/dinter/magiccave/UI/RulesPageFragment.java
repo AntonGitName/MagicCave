@@ -16,44 +16,68 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class RulesPageFragment extends Fragment {
 
     private static final String TAG = "RulesPageFragment";
-
+	private static final int PAGE_STRINGS_RESOURCES_ID[] = { R.string.modes_label, R.string.modes_text,
+			R.string.task_label, R.string.task_text, R.string.control_label, R.string.control_text };
+    
+	private static final int PAGES_NUMBER = 3;
+	
+	private List<View> pages;
+	
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ResourceLoader rl = ((MainActivity) getActivity()).RESOURCE_LOADER;
-        BigCandleView bigCandleView = (BigCandleView) getActivity().findViewById(R.id.bigCandleView1);
-        bigCandleView.setResources(rl);
-        bigCandleView = (BigCandleView) getActivity().findViewById(R.id.bigCandleView2);
-        bigCandleView.setResources(rl);
         
-        ViewPager pager = (ViewPager) getActivity().findViewById(R.id.rules_pager);
-        pager.setAdapter(new RulesPageAdapter());
     }
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (container == null) {
-            return null;
-        }
+    	final View rootView = inflater.inflate(R.layout.rules_page_layout, container, false);
+    	
+    	ResourceLoader rl = ((MainActivity) getActivity()).RESOURCE_LOADER;
+        BigCandleView bigCandleView = (BigCandleView) rootView.findViewById(R.id.bigCandleView1);
+        bigCandleView.setResources(rl);
+        bigCandleView = (BigCandleView) rootView.findViewById(R.id.bigCandleView2);
+        bigCandleView.setResources(rl);
         
-        return inflater.inflate(R.layout.rules_page_layout, container, false);
+        final ViewPager pager = (ViewPager) rootView.findViewById(R.id.rules_pager);
+        pager.setAdapter(new RulesPageAdapter(createPages()));
+    	
+    	return rootView;
+    }
+        
+    private List<View> createPages() {
+		if (pages == null) {
+			pages = new ArrayList<>();
+			
+			LayoutInflater inflater = LayoutInflater.from(getActivity());
+
+			View page;
+			TextView textView;
+
+			for (int i = 0; i < PAGES_NUMBER; ++i) {
+				page = inflater.inflate(R.layout.rules_page, null);
+				textView = (TextView) page.findViewById(R.id.rules_page_label);
+				textView.setText(PAGE_STRINGS_RESOURCES_ID[i * 2]);
+				textView = (TextView) page.findViewById(R.id.rules_page_text);
+				textView.setText(PAGE_STRINGS_RESOURCES_ID[i * 2 + 1]);
+				pages.add(page);
+			}
+		}
+		return pages;
     }
     
     private final class RulesPageAdapter extends PagerAdapter {
 
-        private final List<View> pages = new ArrayList<>();
-        
-        public RulesPageAdapter() {
-            LayoutInflater inflater = LayoutInflater.from(getActivity());
-            // And how can I fix the issue?
-            pages.add(inflater.inflate(R.layout.rules_page_1, null));
-            pages.add(inflater.inflate(R.layout.rules_page_2, null));
-            pages.add(inflater.inflate(R.layout.rules_page_3, null));
+        private final List<View> pages;
+                
+        public RulesPageAdapter(List<View> pages) {
+            this.pages = pages;            
             Log.d(TAG, "Pager adapter created");
         }
         
