@@ -1,47 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
     android:background="@drawable/rules_background"
-    android:gravity="center"
-    android:weightSum="200" >
+    android:weightSum="1" >
 
-    <TableRow
+    <TextView
+        android:id="@+id/rules_page_label"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:gravity="top|center_horizontal"
-        android:layout_weight="20" >
+        android:gravity="center_horizontal"
+        android:layout_weight="0.10"
+        android:textColor="@color/rules_page_text_color"
+        android:textSize="40sp" />
 
-        <TextView
-            android:id="@+id/rules_page_label"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="top|center_horizontal"
-            android:gravity="center_horizontal"
-            android:text="LABEL"
-            android:textColor="#4169E1"
-            android:textSize="25sp"
-            android:textStyle="bold" />
-    </TableRow>
-
-    <TableRow
+    	<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:weightSum="130"
-        android:layout_weight="130"
-        android:gravity="top|center_horizontal" >
+        android:layout_weight="0.6"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:weightSum="1" >
+    
+	        <TextView
+	            android:id="@+id/rules_page_text"
+	            android:layout_width="0dp"
+	            android:layout_height="match_parent"
+	            android:layout_weight="0.7"
+	            android:gravity="center"
+	            android:textColor="@color/rules_page_text_color"
+	            android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/rules_page_text"
-            android:layout_weight="100"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text.Text text text."
-            android:textColor="#6B8E23"
-            android:textStyle="italic" />
-
-    </TableRow>
-
-</TableLayout>
+		</LinearLayout>	        
+</LinearLayout>

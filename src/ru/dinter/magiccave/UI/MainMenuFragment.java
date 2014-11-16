@@ -4,6 +4,7 @@ import ru.dinter.magiccave.MainActivity;
 import ru.dinter.magiccave.R;
 import ru.dinter.magiccave.IO.ResourceLoader;
 import ru.dinter.magiccave.view.BigCandleView;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -19,6 +20,7 @@ public class MainMenuFragment extends Fragment {
     private View rootView;
 
     private Button chsLvlButton;
+    private Button rndLvlButton;
     private Button rulesButton;
     private Button quitButton;
 
@@ -40,10 +42,20 @@ public class MainMenuFragment extends Fragment {
         bigCandleView = (BigCandleView) rootView.findViewById(R.id.bigCandleView2);
         bigCandleView.setResources(rl);
 
-        quitButton = (Button) rootView.findViewById(R.id.quit_btn);
+        Typeface type = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Parchment MF.ttf");
+        
+        
         chsLvlButton = (Button) rootView.findViewById(R.id.choose_level_btn);
+        rndLvlButton = (Button) rootView.findViewById(R.id.random_level_btn);
         rulesButton = (Button) rootView.findViewById(R.id.rules_btn);
-
+        quitButton = (Button) rootView.findViewById(R.id.quit_btn);
+        
+        Button[] buttons = {chsLvlButton, rulesButton, quitButton, rndLvlButton};
+        
+        for (Button button: buttons) {
+        	button.setTypeface(type, Typeface.BOLD);
+        }
+        
         quitButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
