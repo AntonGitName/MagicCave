@@ -30,12 +30,6 @@ public class RulesPageFragment extends Fragment {
 	private List<View> pages;
 
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-	}
-
-	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		final View rootView = inflater.inflate(R.layout.rules_page_layout, container, false);
 

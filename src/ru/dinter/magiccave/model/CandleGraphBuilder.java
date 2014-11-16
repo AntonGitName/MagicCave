@@ -36,6 +36,57 @@ public final class CandleGraphBuilder {
         candles[toAdd] = tmp;
     }
 
+    public static CandleGraph createRandom(int w, int h, int n) throws CandleGraphBuilderException {
+    	
+    	if (w * h < n) {
+    		throw new CandleGraphBuilderException("Too small grid for this random CandleGraph");
+    	}
+    	
+    	CandleModel[] candles = new CandleModel[n];
+    	
+    	Set<Integer> rects = new TreeSet<>();
+        while (rects.size() < n) {
+            int k = RND.nextInt(w * h);
+            rects.add(k);
+        }
+        
+        float x;
+        float y;
+        int i = 0;
+        for (int k : rects) {
+        	x = (k % w) / (float) w + 1.0f / (2.0f * w);
+            y = (k / w) / (float) h + 1.0f / (2.0f * h);
+            candles[i++] = new CandleModel(x, y);
+        }
+        
+        for (i = 1; i < n; ++i) {
+            connect(candles, i);
+        }
+
+        for (i = 0; i < n; ++i) {
+            List<CandleModel> nearestCandles = new ArrayList<>();
+            for (int j = i + 1; j < n; ++j) {
+                nearestCandles.add(candles[j]);
+            }
+            final CandleModel curCandle = candles[i];
+            Collections.sort(nearestCandles, new Comparator<CandleModel>() {
+
+                @Override
+                public int compare(CandleModel arg0, CandleModel arg1) {
+                    return Double.compare(curCandle.distanceTo(arg0), curCandle.distanceTo(arg1));
+                }
+            });
+            int toAdd = RND.nextInt(MAX_NEIGHBOUR_RAND);
+            for (int j = 0; j < toAdd && j < nearestCandles.size(); ++j) {
+                if (!curCandle.getNeighbours().contains(nearestCandles.get(j))) {
+                    curCandle.connect(nearestCandles.get(j));
+                }
+            }
+        }
+
+        return new CandleGraph(candles);
+    }
+    
     public static CandleGraph createRandom(int n) {
         CandleModel[] candles = new CandleModel[n];
 

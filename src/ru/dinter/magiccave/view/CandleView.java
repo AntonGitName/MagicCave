@@ -7,6 +7,7 @@ import ru.dinter.magiccave.model.CandleModel.CandleState;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 
 public class CandleView {
 
@@ -18,6 +19,8 @@ public class CandleView {
         this.animationTimer = RND.nextInt(MAX_ANIMATION);
         this.candleBitmap = candleBitmap;
         this.fireBitmaps = fireBitmaps;
+        
+        paint.setStyle(Style.STROKE);
     }
 
     private final CandleModel model;
@@ -36,10 +39,12 @@ public class CandleView {
         float x = w * model.getX() - candleBitmap.getWidth() / 2;
         float y = h * model.getY() - candleBitmap.getHeight() / 2 + fireBitmaps[0].getHeight() / 2;
         canvas.drawBitmap(candleBitmap, x, y, paint);
+        // canvas.drawRect(x, y, candleBitmap.getWidth() + x, candleBitmap.getHeight() + y, paint);
         if (model.getState() == CandleState.ON) {
             x += (candleBitmap.getWidth() - fireBitmaps[0].getWidth()) / 2;
             y -= fireBitmaps[0].getHeight();
             canvas.drawBitmap(fireBitmaps[animationTimer * fireBitmaps.length / MAX_ANIMATION], x, y, paint);
+            // canvas.drawRect(x, y, fireBitmaps[0].getWidth() + x, fireBitmaps[0].getHeight() + y, paint);
         }
     }
 

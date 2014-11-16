@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class MainMenuFragment extends Fragment {
 
@@ -44,6 +45,7 @@ public class MainMenuFragment extends Fragment {
 
         Typeface type = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Parchment MF.ttf");
         
+        ((TextView) rootView.findViewById(R.id.main_menu_label)).setTypeface(type, Typeface.BOLD_ITALIC);
         
         chsLvlButton = (Button) rootView.findViewById(R.id.choose_level_btn);
         rndLvlButton = (Button) rootView.findViewById(R.id.random_level_btn);
@@ -74,6 +76,13 @@ public class MainMenuFragment extends Fragment {
         });
         
         // TODO
-        chsLvlButton.getContext();
+        rndLvlButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().beginTransaction().replace(R.id.container, new RandomLevelFragment())
+                        .addToBackStack(null).commit();
+            }
+        });
     }
 }
