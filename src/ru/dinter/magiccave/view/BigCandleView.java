@@ -42,7 +42,7 @@ public class BigCandleView extends View {
         super.onDraw(canvas);
 
         if (isResourcesSet) {
-            candle.draw(canvas, size.x, size.y);
+            candle.draw(canvas);
         }
     }
 
@@ -53,7 +53,7 @@ public class BigCandleView extends View {
             isResourcesSet = true;
             size.x = (int) (w * CANDLE_RATE);
             size.y = (int) (h * CANDLE_RATE);
-            candle = new CandleView(new CandleModel(0.5f, 0.5f), rl.getCandleBitmap(size), rl.getFireBitmaps(size), false);
+            candle = new CandleView(new CandleModel(0.5f, 0.5f), rl.getCandleBitmap(size), rl.getFireBitmaps(size), false, w, h);
         }
         size.x = w;
         size.y = h;

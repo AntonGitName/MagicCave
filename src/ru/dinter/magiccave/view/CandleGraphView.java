@@ -20,30 +20,29 @@ public class CandleGraphView {
 	private static final int DEFAULT_CANDLES_NUM = 15;
 	private static final int MIN_CANDLES_NUM = 6;
 	private static final int MAX_CANDLES_NUM = 15;
-
-	private static final float NEAR_DISTANCE = 0.002f;
 	
 	private final CandleGraph candlesTree;
 	private final CandleView[] candles;
 
 	private static final Random RND = new Random();
-
+	
+	@Deprecated
 	public CandleGraphView(ResourceLoader rl) {
 		candlesTree = CandleGraphBuilder.createRandom(DEFAULT_CANDLES_NUM);
 		candlesTree.shuffle();
 		CandleModel[] candleModels = candlesTree.getCandles();
 		candles = new CandleView[candleModels.length];
-
+		
 		for (int i = 0; i < candles.length; ++i) {
 			candles[i] = new CandleView(candleModels[i], rl.getCandleBitmap(new Point(30, 40)),
-					rl.getFireBitmaps(new Point(20, 40)), true);
+					rl.getFireBitmaps(new Point(20, 40)), true, 0, 0);
 		}
 	}
 
 	public CandleGraphView(ResourceLoader rl, int screenWidth, int screenHeight, Point candleSize)
 			throws CandleGraphBuilderException {
 		int candleNum = RND.nextInt(MAX_CANDLES_NUM - MIN_CANDLES_NUM + 1) + MIN_CANDLES_NUM;
-
+		
 		Bitmap candleBitmap = rl.getCandleBitmap(new Point(candleSize.x, candleSize.y / 2));
 		Bitmap[] fireBitmaps = rl.getFireBitmaps(new Point(candleSize.x, candleSize.y / 2));
 		
@@ -59,27 +58,20 @@ public class CandleGraphView {
 		candles = new CandleView[candleModels.length];
 
 		for (int i = 0; i < candles.length; ++i) {
-			candles[i] = new CandleView(candleModels[i], candleBitmap, fireBitmaps, true);
+			candles[i] = new CandleView(candleModels[i], candleBitmap, fireBitmaps, true, screenWidth, screenHeight);
 		}
 	}
 
 	public void clickXY(float x, float y) {
-		CandleModel[] candles = candlesTree.getCandles();
-		CandleModel bestCandle = candles[0];
-		float bestDist = bestCandle.distanceTo(x, y);
-		float tempDist;
-		for (int i = 0; i < candles.length; ++i) {
-			tempDist = candles[i].distanceTo(x, y);
-			if (tempDist < bestDist) {
-				bestDist = tempDist;
-				bestCandle = candles[i];
+		for (CandleView candleView : candles) {
+			if (candleView.isTouched((int)x, (int)y)) {
+				candleView.changeState();
+				return;
 			}
-		}
-		if (bestDist <= NEAR_DISTANCE) {
-			bestCandle.forceInvertState();
 		}
 	}
 
+	@Deprecated
 	public void draw(Canvas canvas, Paint linePaint, int w, int h) {
 		for (CandleView candle : candles) {
 
@@ -99,10 +91,16 @@ public class CandleGraphView {
 		}
 	}
 
+	@Deprecated
 	public void draw(Canvas canvas, int w, int h) {
 		for (CandleView candle : candles) {
 			candle.draw(canvas, w, h);
 		}
 	}
-
+	
+	public void draw(Canvas canvas) {
+		for (CandleView candle : candles) {
+			candle.draw(canvas);
+		}
+	}
 }

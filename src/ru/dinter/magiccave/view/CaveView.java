@@ -6,13 +6,9 @@ import java.util.TimerTask;
 import ru.dinter.magiccave.MainActivity;
 import ru.dinter.magiccave.IO.ResourceLoader;
 import ru.dinter.magiccave.model.CandleGraphBuilderException;
-import ru.dinter.magiccave.model.CandleModel;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Paint.Style;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -47,7 +43,7 @@ public class CaveView extends View {
         super.onDraw(canvas);
 
         if (isResourcesSet) {
-        	candles.draw(canvas, size.x, size.y);
+        	candles.draw(canvas);
         }
     }
     
@@ -72,9 +68,7 @@ public class CaveView extends View {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (isResourcesSet) {
-			float x = event.getX() / size.x;
-			float y = event.getY() / size.y;
-			candles.clickXY(x, y);
+			candles.clickXY(event.getX(), event.getY());
 			invalidate();
 		}
 		return false;
