@@ -70,25 +70,6 @@ public class CandleView {
 		return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
 	}
 
-	@Deprecated
-	public void draw(Canvas canvas, int w, int h) {
-		if (++animationTimer == MAX_ANIMATION) {
-			animationTimer = 0;
-		}
-		float x = w * model.getX() - candleBitmap.getWidth() / 2;
-		float y = h * model.getY() - candleBitmap.getHeight() / 2 + fireBitmaps[0].getHeight() / 2;
-		canvas.drawBitmap(candleBitmap, x, y, paint);
-		// canvas.drawRect(x, y, candleBitmap.getWidth() + x,
-		// candleBitmap.getHeight() + y, paint);
-		if (model.getState() == CandleState.ON) {
-			x += (candleBitmap.getWidth() - fireBitmaps[0].getWidth()) / 2;
-			y -= fireBitmaps[0].getHeight();
-			canvas.drawBitmap(fireBitmaps[animationTimer * fireBitmaps.length / MAX_ANIMATION], x, y, paint);
-			// canvas.drawRect(x, y, fireBitmaps[0].getWidth() + x,
-			// fireBitmaps[0].getHeight() + y, paint);
-		}
-	}
-
 	public void draw(Canvas canvas) {
 		if (++animationTimer == MAX_ANIMATION) {
 			animationTimer = 0;
