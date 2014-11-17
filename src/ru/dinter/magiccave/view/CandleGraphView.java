@@ -36,7 +36,7 @@ public class CandleGraphView {
 
 		for (int i = 0; i < candles.length; ++i) {
 			candles[i] = new CandleView(candleModels[i], rl.getCandleBitmap(new Point(30, 40)),
-					rl.getFireBitmaps(new Point(20, 40)));
+					rl.getFireBitmaps(new Point(20, 40)), true);
 		}
 	}
 
@@ -59,7 +59,7 @@ public class CandleGraphView {
 		candles = new CandleView[candleModels.length];
 
 		for (int i = 0; i < candles.length; ++i) {
-			candles[i] = new CandleView(candleModels[i], candleBitmap, fireBitmaps);
+			candles[i] = new CandleView(candleModels[i], candleBitmap, fireBitmaps, true);
 		}
 	}
 
