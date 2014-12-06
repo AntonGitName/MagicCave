@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/light_cave_background"
+    android:orientation="vertical" >
+     
+	<ru.dinter.magiccave.view.CaveView
+	    android:id="@+id/random_level_cave_view"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent" >
+	    
+	</ru.dinter.magiccave.view.CaveView>
+    
+    
+</LinearLayout>
