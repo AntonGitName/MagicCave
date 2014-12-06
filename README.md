@@ -1,7 +1,7 @@
 MagicCave
 =========
 
-![alt tag](https://github.com/AntonGitName/MagicCave/blob/AndroidStudio/app/src/main/res/drawable-hdpi/candle.png?raw=true "Happy candle!=)")
+![alt tag](https://github.com/AntonGitName/MagicCave/blob/master/app/src/main/res/drawable-hdpi/candle.png?raw=true "Happy candle!=)")
 
 It is a small time killing game for Android. Go hard and solve each puzzle!
 
