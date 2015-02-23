@@ -2,6 +2,7 @@ package ru.dinter.antonpp.magiccave.fragments;
 
 import android.app.Activity;
 import android.graphics.Typeface;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import ru.dinter.antonpp.magiccave.MainApplication;
@@ -85,7 +87,19 @@ public class MainMenuFragment extends Fragment {
             }
         });
 
+        initCandleAnimation(rootView);
+
         return rootView;
+    }
+
+    private void initCandleAnimation(View rootView) {
+        AnimationDrawable candleAnimation;
+        ImageView candle = (ImageView) rootView.findViewById(R.id.candleViewLeft);
+        candleAnimation = (AnimationDrawable) candle.getDrawable();
+        candleAnimation.start();
+        candle = (ImageView) rootView.findViewById(R.id.candleViewRight);
+        candleAnimation = (AnimationDrawable) candle.getDrawable();
+        candleAnimation.start();
     }
 
     @Override

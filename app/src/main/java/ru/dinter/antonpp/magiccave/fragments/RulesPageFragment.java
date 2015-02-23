@@ -2,6 +2,7 @@ package ru.dinter.antonpp.magiccave.fragments;
 
 import android.app.Activity;
 import android.graphics.Typeface;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -56,7 +58,19 @@ public class RulesPageFragment extends Fragment {
         final ViewPager pager = (ViewPager) rootView.findViewById(R.id.rules_pager);
         pager.setAdapter(new RulesPageAdapter(getFragmentManager()));
 
+        initCandleAnimation(rootView);
+
         return rootView;
+    }
+
+    private void initCandleAnimation(View rootView) {
+        AnimationDrawable candleAnimation;
+        ImageView candle = (ImageView) rootView.findViewById(R.id.candleViewLeft);
+        candleAnimation = (AnimationDrawable) candle.getDrawable();
+        candleAnimation.start();
+        candle = (ImageView) rootView.findViewById(R.id.candleViewRight);
+        candleAnimation = (AnimationDrawable) candle.getDrawable();
+        candleAnimation.start();
     }
 
     @Override
