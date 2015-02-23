@@ -37,45 +37,41 @@
             <TableRow android:gravity="center" >
 
                 <Button
+                    style="@style/MainMenuOptionText"
                     android:id="@+id/choose_level_btn"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/choose_level_btn"
-                    android:textColor="@color/main_menu_text_color"
-                    android:textSize="40sp" />
+                    android:text="@string/choose_level_btn" />
             </TableRow>
 
             <TableRow android:gravity="center" >
 
                 <Button
+                    style="@style/MainMenuOptionText"
                     android:id="@+id/random_level_btn"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/random_level_btn"
-                    android:textColor="@color/main_menu_text_color"
-                    android:textSize="40sp" />
+                    android:text="@string/random_level_btn" />
             </TableRow>
 
             <TableRow android:gravity="center" >
 
                 <Button
+                    style="@style/MainMenuOptionText"
                     android:id="@+id/rules_btn"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/rules_btn"
-                    android:textColor="@color/main_menu_text_color"
-                    android:textSize="40sp" />
+                    android:text="@string/rules_btn" />
             </TableRow>
 
             <TableRow android:gravity="center" >
 
                 <Button
+                    style="@style/MainMenuOptionText"
+                    android:id="@+id/about_btn"
+                    android:text="@string/about_btn" />
+            </TableRow>
+
+            <TableRow android:gravity="center" >
+
+                <Button
+                    style="@style/MainMenuOptionText"
                     android:id="@+id/quit_btn"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:text="@string/quit_btn"
-                    android:textColor="@color/main_menu_text_color"
-                    android:textSize="40sp" />
+                    android:text="@string/quit_btn" />
             </TableRow>
         </TableLayout>
 

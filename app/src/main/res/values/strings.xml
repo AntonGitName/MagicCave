@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Magic Cave Activity -->
     <string name="app_name">MagicCave</string>
     <string name="title_activity_main_menu">Magic Cave</string>
     <string name="choose_level_btn">Choose level</string>
     <string name="random_level_btn">Random level</string>
     <string name="rules_btn">Rules</string>
+    <string name="about_btn">About</string>
     <string name="quit_btn">Quit</string>
     <string name="task_label">The Task</string>
     <string name="task_text">The task of every level is simple. You are here to light all the candles! You can change the state of any candle but all of them are somehow connected to each other so changing state of only one candle will cause some of its neighbours to change their state too. Don\'t mess up and you will beat the puzzle!</string>
@@ -14,7 +16,10 @@
     <string name="control_label">Controls</string>
     <string name="control_text">You can change a state of a candle by simply touching over it. If you get stack, you can press button *magic* and our super-duper algorithm will show you a few steps that will take you closer to a solution. You also can press menu button if you want to restart level or to get back to main menu.</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Applied Math Department Activity -->
+    <string name="about_app_name">Applied Math Dep</string>
+    <string name="str_depth">Applied Math Department</string>
+    <string name="str_university">St.Petersburg State Polytechnical University</string>
+    <string name="str_toweb">To site</string>
 
 </resources>

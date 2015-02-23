@@ -51,13 +51,21 @@ public class MainMenuFragment extends Fragment {
         final Button chsLvlButton = (Button) rootView.findViewById(R.id.choose_level_btn);
         final Button rndLvlButton = (Button) rootView.findViewById(R.id.random_level_btn);
         final Button rulesButton = (Button) rootView.findViewById(R.id.rules_btn);
+        final Button aboutButton = (Button) rootView.findViewById(R.id.about_btn);
         final Button quitButton = (Button) rootView.findViewById(R.id.quit_btn);
-        Button[] buttons = {chsLvlButton, rulesButton, quitButton, rndLvlButton};
+        Button[] buttons = {chsLvlButton, rulesButton, aboutButton, quitButton, rndLvlButton};
 
         for (Button button: buttons) {
             button.setTypeface(type, Typeface.BOLD);
         }
-        ((TextView) rootView.findViewById(R.id.main_menu_label)).setTypeface(type, Typeface.BOLD_ITALIC);
+        ((TextView) rootView.findViewById(R.id.main_menu_label)).setTypeface(type, Typeface.BOLD);
+
+        aboutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onMainMenuOptionSelected(MAIN_MENU_OPTION.ABOUT);
+            }
+        });
 
         chsLvlButton.setOnClickListener(new View.OnClickListener() {
             @Override
