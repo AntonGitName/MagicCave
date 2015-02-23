@@ -55,7 +55,8 @@ public class AppIntro
 	// DATA
 	long				m_curTime, m_prevTime;
 	int					m_renderCounter;
-	
+	boolean m_isModeStart;
+
 	Activity			m_ctx;
 	int					m_language;
 	int					m_appState;
@@ -70,6 +71,7 @@ public class AppIntro
 	Paint				m_paintLeafFill;
 	Paint				m_paintTextWhite;
 	Paint				m_paintTextYell;
+    Paint				m_paintNameApp;
 	Paint				m_paintBitmap;
 	Path				m_pathAppleGraft;
 	Path				m_pathAppleLeaf;
@@ -93,9 +95,10 @@ public class AppIntro
     };
 
 	// METHODS
-	public AppIntro(Activity ctx, int language)
+	public AppIntro(Activity ctx, int language, boolean isModeStart)
 	{
-		
+
+        m_isModeStart       = isModeStart;
 		m_ctx 				= ctx;
 		m_language 			= language;
 		m_prevTime			= -1;
@@ -121,7 +124,14 @@ public class AppIntro
 		m_paintGreenFill.setAntiAlias(true);
 		m_paintGreenFill.setStrokeWidth(3.0f);
 		m_paintGreenFill.setAlpha(255);
-		
+
+        m_paintNameApp = new Paint();
+        m_paintNameApp.setStyle(Style.FILL);
+        m_paintNameApp.setColor(0xFF7a9900);
+        m_paintNameApp.setAntiAlias(true);
+        m_paintNameApp.setTextSize(36.0f);
+        m_paintNameApp.setTextAlign(Align.CENTER);
+
 		m_paintGraftFill = new Paint();
 		m_paintGraftFill.setStyle(Style.FILL);
 		m_paintGraftFill.setColor(0xFF905000);
@@ -235,11 +245,13 @@ public class AppIntro
 			return;
 		}
 	}
-	public int isFinished()
+
+	public boolean isFinished()
 	{
-		return (m_appState == APP_STATE_FINISHED)? 1: 0;
+		return m_appState == APP_STATE_FINISHED;
 	}
-    private boolean isConnectedToInternet() 
+
+    private boolean isConnectedToInternet()
     {
         ConnectivityManager cm = (ConnectivityManager)m_ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
         // test for connection
@@ -691,29 +703,37 @@ public class AppIntro
 			canvas.drawText(m_strDepth, 	 0, m_strDepth.length(), 		m_scrCenterX, vOff + h , 		m_paintTextWhite);
 			canvas.drawText(m_strUniversity, 0, m_strUniversity.length(), 	m_scrCenterX, vOff + h * 2.5f,	m_paintTextYell);
 		}
-		if ( (m_timeState > 2* TIME_LEAF) && isConnectedToInternet() )
+		if ( (m_timeState > 2 * TIME_LEAF) && isConnectedToInternet() )
 		{
 			opa = 255;
 			if (m_timeState < 3 * TIME_LEAF)
 				opa = (m_timeState - 2 * TIME_LEAF) * 256 / TIME_LEAF;
 			m_paintBitmap.setAlpha(opa);
 			m_paintTextWhite.setAlpha(opa);
-			
-			Rect rSrc = new Rect(), rDst = new Rect();
-			int w = m_bitmapButtonWeb.getWidth();
-			int h = m_bitmapButtonWeb.getHeight();
-			rSrc.set(0,  0, w, h);
-			int bw = (int)(m_appleRadiusBase * BUTTON_SCALE);
-			int bh = bw >> 2;
-			if (m_scrH > m_scrW)
-				rDst.set(m_scrCenterX - (bw>>1), m_scrH - bh*2, m_scrCenterX + (bw>>1), m_scrH - bh);
-			else
-				rDst.set(m_scrCenterX - (bw>>1), m_scrH - bh, m_scrCenterX + (bw>>1), m_scrH);
-			canvas.drawBitmap(m_bitmapButtonWeb, rSrc, rDst , m_paintBitmap);
-			m_paintTextWhite.setTextSize(20.0f);
-			m_paintTextWhite.getTextBounds(m_strWeb, 0, m_strWeb.length(), rSrc);
-			h = rSrc.height();
-			canvas.drawText(m_strWeb, 0, m_strWeb.length(),	rDst.centerX(), rDst.centerY() + (h>>1) , m_paintTextWhite);
+
+            Rect rSrc = new Rect(), rDst = new Rect();
+            int w = m_bitmapButtonWeb.getWidth();
+            int h = m_bitmapButtonWeb.getHeight();
+            rSrc.set(0,  0, w, h);
+            int bw = (int)(m_appleRadiusBase * BUTTON_SCALE);
+            int bh = bw >> 2;
+            if (m_scrH > m_scrW)
+                rDst.set(m_scrCenterX - (bw>>1), m_scrH - bh*2, m_scrCenterX + (bw>>1), m_scrH - bh);
+            else
+                rDst.set(m_scrCenterX - (bw>>1), m_scrH - bh, m_scrCenterX + (bw>>1), m_scrH);
+
+            if (m_isModeStart) {
+                String appName = m_ctx.getString(R.string.app_name);
+                m_paintTextWhite.getTextBounds(m_strWeb, 0, m_strWeb.length(), rSrc);
+                h = rSrc.height();
+                canvas.drawText(appName, 0, appName.length(), rDst.centerX(), rDst.centerY() + (h >> 1), m_paintNameApp);
+            } else {
+                canvas.drawBitmap(m_bitmapButtonWeb, rSrc, rDst , m_paintBitmap);
+                m_paintTextWhite.setTextSize(20.0f);
+                m_paintTextWhite.getTextBounds(m_strWeb, 0, m_strWeb.length(), rSrc);
+                h = rSrc.height();
+                canvas.drawText(m_strWeb, 0, m_strWeb.length(), rDst.centerX(), rDst.centerY() + (h >> 1), m_paintTextWhite);
+            }
 		}
 		
 		// update state
@@ -722,7 +742,11 @@ public class AppIntro
 
 	public boolean	onTouch(int x, int y, int touchType)
 	{
-		int bw = (int)(m_appleRadiusBase * BUTTON_SCALE);
+        if (m_isModeStart) {
+            ((AboutActivity) m_ctx).startMainMenu();
+            return true;
+        }
+        int bw = (int)(m_appleRadiusBase * BUTTON_SCALE);
 		int bh = bw >> 2;
 		Rect rDst = new Rect();
 		if (m_scrH > m_scrW)

@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Magic Cave Activity -->
-    <string name="app_name">MagicCave</string>
+    <string name="app_name">Magic Cave</string>
     <string name="title_activity_main_menu">Magic Cave</string>
     <string name="choose_level_btn">Choose level</string>
     <string name="random_level_btn">Random level</string>

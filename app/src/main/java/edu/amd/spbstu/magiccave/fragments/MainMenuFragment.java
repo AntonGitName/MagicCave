@@ -63,35 +63,35 @@ public class MainMenuFragment extends Fragment {
         aboutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onMainMenuOptionSelected(MAIN_MENU_OPTION.ABOUT);
+                mListener.onMainMenuOptionSelected(MainMenuOption.ABOUT);
             }
         });
 
         chsLvlButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onMainMenuOptionSelected(MAIN_MENU_OPTION.SCENARIO);
+                mListener.onMainMenuOptionSelected(MainMenuOption.SCENARIO);
             }
         });
 
         quitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onMainMenuOptionSelected(MAIN_MENU_OPTION.EXIT);
+                mListener.onMainMenuOptionSelected(MainMenuOption.EXIT);
             }
         });
 
         rulesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onMainMenuOptionSelected(MAIN_MENU_OPTION.RULES);
+                mListener.onMainMenuOptionSelected(MainMenuOption.RULES);
             }
         });
 
         rndLvlButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onMainMenuOptionSelected(MAIN_MENU_OPTION.RANDOM);
+                mListener.onMainMenuOptionSelected(MainMenuOption.RANDOM);
             }
         });
 
@@ -127,7 +127,7 @@ public class MainMenuFragment extends Fragment {
         mListener = null;
     }
 
-    public enum MAIN_MENU_OPTION {
+    public enum MainMenuOption {
         SCENARIO,
         RANDOM,
         RULES,
@@ -136,7 +136,7 @@ public class MainMenuFragment extends Fragment {
     }
 
     public interface OnMainMenuOptionSelectedListener {
-        public void onMainMenuOptionSelected(MAIN_MENU_OPTION option);
+        public void onMainMenuOptionSelected(MainMenuOption option);
     }
 
 }

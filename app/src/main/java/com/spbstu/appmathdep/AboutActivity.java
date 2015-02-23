@@ -1,6 +1,7 @@
 package com.spbstu.appmathdep;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -14,18 +15,24 @@ import android.view.WindowManager;
 
 import java.util.Locale;
 
+import edu.amd.spbstu.magiccave.MainMenuActivity;
+
 //****************************************************************
 //class AboutActivity
 //****************************************************************
 public class AboutActivity extends Activity implements  OnCompletionListener, View.OnTouchListener
 {
-	
+    // *************************************************
+    // CONST
+    // *************************************************
+    public static final String ABOUT_ACTIVITY_MODE_KEY  = "ABOUT_ACTIVITY_MODE_KEY";
+
 	// *************************************************
 	// DATA
 	// *************************************************
 	AppIntro				m_app;
 	AppView				    m_appView;
-	
+    boolean                 m_isModeStart;
 
 	// *************************************************
 	// METHODS
@@ -38,7 +45,15 @@ public class AboutActivity extends Activity implements  OnCompletionListener, Vi
         // No Status bar
         final Window win = getWindow();
         win.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        
+
+        Intent intent = getIntent();
+
+        if (intent != null) {
+            m_isModeStart = intent.getBooleanExtra(ABOUT_ACTIVITY_MODE_KEY, true);
+        } else {
+            m_isModeStart = true;
+        }
+
         // Detect language
         String strLang = Locale.getDefault().getDisplayLanguage();
         int language;
@@ -63,7 +78,7 @@ public class AboutActivity extends Activity implements  OnCompletionListener, Vi
         	//alertDialog.show();        	
         }
         // Create application
-        m_app = new AppIntro(this, language);
+        m_app = new AppIntro(this, language, m_isModeStart);
         // Create view
         m_appView = new AppView(this);
         setContentView(m_appView);
@@ -86,7 +101,13 @@ public class AboutActivity extends Activity implements  OnCompletionListener, Vi
     	//switchToGame();
     }
 	
-	
+	public void startMainMenu() {
+        Intent intent = new Intent(this, MainMenuActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
     public boolean onTouch(View v, MotionEvent evt)
     {
     	int x = (int)evt.getX();
@@ -133,7 +154,5 @@ public class AboutActivity extends Activity implements  OnCompletionListener, Vi
 		super.onConfigurationChanged(confNew);
 		m_appView.onConfigurationChanged(confNew);
 	}
-    
-    
 }
 

@@ -18,22 +18,26 @@
             android:configChanges="keyboardHidden|screenSize"
             android:label="@string/title_activity_main_menu"
             android:theme="@style/AppTheme"
+            android:parentActivityName="com.spbstu.appmathdep.AboutActivity"
             android:screenOrientation="landscape" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.spbstu.appmathdep.AboutActivity" />
         </activity>
 
         <!-- Applied Math Department Activity -->
         <activity
             android:name="com.spbstu.appmathdep.AboutActivity"
-            android:label="@string/about_app_name"
+            android:label="@string/title_activity_main_menu"
             android:parentActivityName="MainMenuActivity"
             android:screenOrientation="landscape" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.spbstu.appmathdep.AboutActivity" />
+                android:value=".MainMenuActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

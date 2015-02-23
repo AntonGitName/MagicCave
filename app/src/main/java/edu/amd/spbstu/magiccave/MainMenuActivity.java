@@ -31,7 +31,7 @@ public class MainMenuActivity extends FragmentActivity implements MainMenuFragme
     }
 
     @Override
-    public void onMainMenuOptionSelected(MainMenuFragment.MAIN_MENU_OPTION option) {
+    public void onMainMenuOptionSelected(MainMenuFragment.MainMenuOption option) {
         switch (option){
 
             case SCENARIO:
@@ -45,13 +45,16 @@ public class MainMenuActivity extends FragmentActivity implements MainMenuFragme
                 onAboutButtonClicked();
                 break;
             case EXIT:
+                // android.os.Process.killProcess(android.os.Process.myPid());
                 finish();
                 break;
         }
     }
 
     private void onAboutButtonClicked() {
-        startActivity(new Intent(this, AboutActivity.class));
+        Intent intent = new Intent(this, AboutActivity.class);
+        intent.putExtra(AboutActivity.ABOUT_ACTIVITY_MODE_KEY, false);
+        startActivity(intent);
     }
 
     @Override
