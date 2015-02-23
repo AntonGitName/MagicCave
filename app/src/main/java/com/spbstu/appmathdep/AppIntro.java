@@ -11,7 +11,7 @@ import android.util.*;
 import android.net.*;
 import java.io.*;
 
-import ru.dinter.antonpp.magiccave.R;
+import edu.amd.spbstu.magiccave.R;
 
 public class AppIntro
 {

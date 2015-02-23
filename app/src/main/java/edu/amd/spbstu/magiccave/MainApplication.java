@@ -1,8 +1,8 @@
-package ru.dinter.antonpp.magiccave;
+package edu.amd.spbstu.magiccave;
 
 import android.app.Application;
 
-import ru.dinter.antonpp.magiccave.IO.ResourceLoader;
+import edu.amd.spbstu.magiccave.IO.ResourceLoader;
 
 /**
  * Created by Anton on 23.02.2015.

@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "ru.dinter.antonpp.magiccave"
+        applicationId "edu.amd.spbstu.magiccave"
         minSdkVersion 8
         targetSdkVersion 21
         versionCode 1

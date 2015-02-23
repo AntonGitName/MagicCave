@@ -1,4 +1,4 @@
-package ru.dinter.antonpp.magiccave;
+package edu.amd.spbstu.magiccave;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,8 +6,8 @@ import android.support.v4.app.FragmentActivity;
 
 import com.spbstu.appmathdep.AboutActivity;
 
-import ru.dinter.antonpp.magiccave.fragments.MainMenuFragment;
-import ru.dinter.antonpp.magiccave.fragments.RulesPageFragment;
+import edu.amd.spbstu.magiccave.fragments.MainMenuFragment;
+import edu.amd.spbstu.magiccave.fragments.RulesPageFragment;
 
 /**
  * Created by Anton on 22.02.2015.

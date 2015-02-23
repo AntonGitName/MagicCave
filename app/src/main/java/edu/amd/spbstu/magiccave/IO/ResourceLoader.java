@@ -1,4 +1,4 @@
-package ru.dinter.antonpp.magiccave.IO;
+package edu.amd.spbstu.magiccave.IO;
 
 import android.content.res.AssetManager;
 import android.content.res.Resources;

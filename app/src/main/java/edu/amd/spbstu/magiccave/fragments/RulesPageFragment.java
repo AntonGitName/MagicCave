@@ -1,4 +1,4 @@
-package ru.dinter.antonpp.magiccave.fragments;
+package edu.amd.spbstu.magiccave.fragments;
 
 import android.app.Activity;
 import android.graphics.Typeface;
@@ -16,8 +16,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import ru.dinter.antonpp.magiccave.MainApplication;
-import ru.dinter.antonpp.magiccave.R;
+import edu.amd.spbstu.magiccave.MainApplication;
+import edu.amd.spbstu.magiccave.R;
 
 /**
  * Created by Anton on 23.02.2015.

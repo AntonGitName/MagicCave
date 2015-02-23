@@ -1,4 +1,4 @@
-package ru.dinter.antonpp.magiccave;
+package edu.amd.spbstu.magiccave;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
