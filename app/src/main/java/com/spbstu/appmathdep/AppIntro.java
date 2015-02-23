@@ -13,14 +13,7 @@ import java.io.*;
 
 import ru.dinter.antonpp.magiccave.R;
 
-class V2d
-{
-	// Data
-	public	int	 x, y;	
-};
-
-
-public class AppIntro 
+public class AppIntro
 {
 	// CONST
 	static public final int LANGUAGE_ENG				= 0;
@@ -92,8 +85,13 @@ public class AppIntro
 	float				m_appleRadiusBase;
 	float				m_appleRadiusMin;
 	V2d					m_point;
-	
-	
+
+    private class V2d
+    {
+        // Data
+        public	int	 x, y;
+    };
+
 	// METHODS
 	public AppIntro(Activity ctx, int language)
 	{
