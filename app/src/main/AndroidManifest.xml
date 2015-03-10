@@ -29,6 +29,7 @@
         <activity
             android:name="com.spbstu.appmathdep.AboutActivity"
             android:label="@string/title_activity_main_menu"
+            android:noHistory="true"
             android:parentActivityName="MainMenuActivity"
             android:screenOrientation="landscape" >
             <meta-data

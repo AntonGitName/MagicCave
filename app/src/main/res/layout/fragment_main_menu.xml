@@ -7,6 +7,7 @@
 
     <TextView
         android:id="@+id/main_menu_label"
+        android:layout_marginTop="10dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -19,13 +20,11 @@
         android:layout_height="match_parent"
         android:orientation="horizontal" >
 
-
-        <ImageView
+        <edu.amd.spbstu.magiccave.views.CandleView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/fire_candle_animation"
-            android:id="@+id/candleViewLeft" />
+            android:layout_margin="10dp"
+            android:layout_weight="1" />
 
         <TableLayout
             android:layout_width="match_parent"
@@ -75,12 +74,18 @@
             </TableRow>
         </TableLayout>
 
-        <ImageView
+        <edu.amd.spbstu.magiccave.views.CandleView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/fire_candle_animation"
-            android:id="@+id/candleViewRight" />
+            android:layout_margin="10dp"
+            android:layout_weight="1" />
+
+        <!--<ImageView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:src="@drawable/fire_candle_animation"-->
+            <!--android:id="@+id/candleViewRight" />-->
 
     </LinearLayout>
 

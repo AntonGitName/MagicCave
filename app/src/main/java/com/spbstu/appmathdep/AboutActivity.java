@@ -32,7 +32,9 @@ public class AboutActivity extends Activity implements  OnCompletionListener, Vi
 	// *************************************************
 	AppIntro				m_app;
 	AppView				    m_appView;
-    boolean                 m_isModeStart;
+    private boolean         isModeStart;
+    private boolean         isMainMenuStarted = true;
+
 
 	// *************************************************
 	// METHODS
@@ -49,9 +51,9 @@ public class AboutActivity extends Activity implements  OnCompletionListener, Vi
         Intent intent = getIntent();
 
         if (intent != null) {
-            m_isModeStart = intent.getBooleanExtra(ABOUT_ACTIVITY_MODE_KEY, true);
+            isModeStart = intent.getBooleanExtra(ABOUT_ACTIVITY_MODE_KEY, true);
         } else {
-            m_isModeStart = true;
+            isModeStart = true;
         }
 
         // Detect language
@@ -78,7 +80,7 @@ public class AboutActivity extends Activity implements  OnCompletionListener, Vi
         	//alertDialog.show();        	
         }
         // Create application
-        m_app = new AppIntro(this, language, m_isModeStart);
+        m_app = new AppIntro(this, language, isModeStart);
         // Create view
         m_appView = new AppView(this);
         setContentView(m_appView);
@@ -100,12 +102,15 @@ public class AboutActivity extends Activity implements  OnCompletionListener, Vi
     	Log.d("AMDEPTH", "onCompletion: Video play is completed");
     	//switchToGame();
     }
-	
-	public void startMainMenu() {
-        Intent intent = new Intent(this, MainMenuActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
+
+	public synchronized void startMainMenu() {
+        if (isMainMenuStarted) {
+            Intent intent = new Intent(this, MainMenuActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            finish();
+            startActivity(intent);
+            isMainMenuStarted = false;
+        }
     }
 
     public boolean onTouch(View v, MotionEvent evt)

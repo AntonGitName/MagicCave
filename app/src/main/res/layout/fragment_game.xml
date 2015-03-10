@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/light_cave_background"
+    tools:context="edu.amd.spbstu.magiccave.fragments.GameFragment">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="6">
+
+        <Button
+            style="@style/GameOptionText"
+            android:id="@+id/button"
+            android:layout_gravity="left|top"
+            android:text="New Button" />
+
+
+        <Button
+            style="@style/GameOptionText"
+            android:id="@+id/button2"
+            android:layout_gravity="center_horizontal|top"
+            android:text="New Button" />
+
+        <Button
+            style="@style/GameOptionText"
+            android:id="@+id/game_menu_btn"
+            android:layout_gravity="right|top"
+            android:text="@string/game_menu_btn" />
+
+    </FrameLayout>
+
+    <edu.amd.spbstu.magiccave.views.GameView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:stretchColumns="*"
+        android:id="@+id/game_view">
+
+        </edu.amd.spbstu.magiccave.views.GameView>
+
+</LinearLayout>

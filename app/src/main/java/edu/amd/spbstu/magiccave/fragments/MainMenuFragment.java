@@ -101,13 +101,13 @@ public class MainMenuFragment extends Fragment {
     }
 
     private void initCandleAnimation(View rootView) {
-        AnimationDrawable candleAnimation;
-        ImageView candle = (ImageView) rootView.findViewById(R.id.candleViewLeft);
-        candleAnimation = (AnimationDrawable) candle.getDrawable();
-        candleAnimation.start();
-        candle = (ImageView) rootView.findViewById(R.id.candleViewRight);
-        candleAnimation = (AnimationDrawable) candle.getDrawable();
-        candleAnimation.start();
+//        AnimationDrawable candleAnimation;
+//        ImageView candle = (ImageView) rootView.findViewById(R.id.candleViewLeft);
+//        candleAnimation = (AnimationDrawable) candle.getDrawable();
+//        candleAnimation.start();
+//        candle = (ImageView) rootView.findViewById(R.id.candleViewRight);
+//        candleAnimation = (AnimationDrawable) candle.getDrawable();
+//        candleAnimation.start();
     }
 
     @Override
