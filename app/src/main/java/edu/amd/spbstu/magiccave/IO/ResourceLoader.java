@@ -25,12 +25,15 @@ public class ResourceLoader {
     private final Typeface typeface;
     private final Bitmap[] fireBitmaps;
     private final Bitmap candleBitmap;
+    private final Bitmap handBitmap;
 
     private final float fireSizeRate;
+    private final float handSizeRate;
     private final float candleSizeRate;
 
     private final Map<Point, Bitmap[]> fireBitmapsScaled = new HashMap<>();
     private final Map<Point, Bitmap> candleBitmapScaled = new HashMap<>();
+    private final Map<Point, Bitmap> handBitmapScaled = new HashMap<>();
 
     private static final int[] fireBitmapsIDs = {R.drawable.fire1, R.drawable.fire2, R.drawable.fire3,
             R.drawable.fire4, R.drawable.fire5, R.drawable.fire6, R.drawable.fire7, R.drawable.fire8, R.drawable.fire9,
@@ -43,6 +46,8 @@ public class ResourceLoader {
 
         typeface = Typeface.createFromAsset(assetManager, TYPEFACE_FILENAME);
 
+        handBitmap = BitmapFactory.decodeResource(resources, R.drawable.hand_left);
+        handSizeRate = (float) handBitmap.getWidth() / (float) handBitmap.getHeight();
         candleBitmap = BitmapFactory.decodeResource(resources, R.drawable.candle);
         candleSizeRate = (float) candleBitmap.getWidth() / (float) candleBitmap.getHeight();
         fireBitmaps = new Bitmap[fireBitmapsIDs.length];
@@ -54,6 +59,10 @@ public class ResourceLoader {
 
     public Typeface getTypeface() {
         return typeface;
+    }
+
+    public Bitmap getHandBitmap() {
+        return handBitmap;
     }
 
     public Bitmap getCandleBitmap() {
@@ -100,9 +109,29 @@ public class ResourceLoader {
         if (!scaledProportional) {
             return getFireBitmaps(size);
         } else {
-            Point adjustedSize = new Point(Math.min(size.x, (int) (candleSizeRate * size.y)), Math.min(size.y,
-                    (int) (size.x / candleSizeRate)));
+            Point adjustedSize = new Point(Math.min(size.x, (int) (fireSizeRate * size.y)), Math.min(size.y,
+                    (int) (size.x / fireSizeRate)));
             return getFireBitmaps(adjustedSize);
+        }
+    }
+
+    public Bitmap getHandBitmap(Point size) {
+        if (!handBitmapScaled.containsKey(size)) {
+            Log.d(TAG, "Loading hand bitmap with size: " + size);
+            Bitmap bm = Bitmap.createScaledBitmap(handBitmap, size.x, size.y, false);
+            handBitmapScaled.put(size, bm);
+            return bm;
+        }
+        return handBitmapScaled.get(size);
+    }
+
+    public Bitmap getHandBitmap(Point size, boolean scaledProportional) {
+        if (!scaledProportional) {
+            return getHandBitmap(size);
+        } else {
+            Point adjustedSize = new Point(Math.min(size.x, (int) (handSizeRate * size.y)), Math.min(size.y,
+                    (int) (size.x / handSizeRate)));
+            return getHandBitmap(adjustedSize);
         }
     }
 }

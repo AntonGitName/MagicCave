@@ -1,27 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/game_menu_background"
+    android:background="@drawable/win_menu_background"
     android:gravity="center_vertical">
 
     <TextView
-        style="@style/GameMenuLabel"
+        style="@style/GameWinLabel"
         android:layout_gravity="center_horizontal"
-        android:text="@string/game_menu_label"
-        android:id="@+id/game_menu_label" />
+        android:text="@string/game_win_label"
+        android:id="@+id/game_win_label" />
+
+    <TextView
+        style="@style/GameWinText"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="150dp"
+        android:id="@+id/game_win_text" />
+
 
     <Button
         style="@style/GameOptionText"
-        android:text="@string/game_resume_btn"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/resume_btn" />
-
-    <Button
-        style="@style/GameOptionText"
-        android:layout_gravity="center_horizontal"
         android:text="@string/game_restart_btn"
+        android:layout_gravity="center_horizontal"
         android:id="@+id/restart_btn" />
+
+    <Button
+        style="@style/GameOptionText"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/game_next_btn"
+        android:id="@+id/next_btn" />
 
     <Button
         style="@style/GameOptionText"

@@ -11,17 +11,16 @@
         android:layout_height="match_parent"
         android:layout_weight="6">
 
+        <Button
+            style="@style/GameOptionText"
+            android:id="@+id/game_help_btn"
+            android:layout_gravity="center_horizontal|left"
+            android:text="@string/game_help_text" />
+
         <TextView
             style="@style/GameCounterText"
             android:id="@+id/touch_counter"
-            android:layout_gravity="left|center_vertical" />
-
-
-        <Button
-            style="@style/GameOptionText"
-            android:id="@+id/button2"
-            android:layout_gravity="center_horizontal|top"
-            android:text="New Button" />
+            android:layout_gravity="center" />
 
         <Button
             style="@style/GameOptionText"

@@ -12,6 +12,7 @@ import edu.amd.spbstu.magiccave.fragments.GameFragment;
 import edu.amd.spbstu.magiccave.fragments.MainMenuFragment;
 import edu.amd.spbstu.magiccave.fragments.MenuDialogFragment;
 import edu.amd.spbstu.magiccave.fragments.RulesPageFragment;
+import edu.amd.spbstu.magiccave.fragments.WinDialogFragment;
 import edu.amd.spbstu.magiccave.util.GameMode;
 
 /**
@@ -20,7 +21,8 @@ import edu.amd.spbstu.magiccave.util.GameMode;
  */
 public class MainMenuActivity extends FragmentActivity implements MainMenuFragment.OnMainMenuOptionSelectedListener
         , GameFragment.OnGameInteractionListener
-        , MenuDialogFragment.OnGameMenuButtonsClickListener {
+        , MenuDialogFragment.OnGameMenuButtonsClickListener
+        , WinDialogFragment.OnWinMenuButtonsClickListener {
 
     public static final String TAG = "MainMenuActivity";
 
@@ -112,6 +114,14 @@ public class MainMenuActivity extends FragmentActivity implements MainMenuFragme
         final GameFragment gameFragment = (GameFragment) getSupportFragmentManager().findFragmentByTag(GameFragment.TAG);
         if (gameFragment != null) {
             gameFragment.onGameMenuButtonsClick(type);
+        }
+    }
+
+    @Override
+    public void onWinMenuButtonsClick(WinDialogFragment.WinMenuButtonType type) {
+        final GameFragment gameFragment = (GameFragment) getSupportFragmentManager().findFragmentByTag(GameFragment.TAG);
+        if (gameFragment != null) {
+            gameFragment.onWinMenuButtonsClick(type);
         }
     }
 }

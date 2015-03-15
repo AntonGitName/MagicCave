@@ -3,6 +3,7 @@ package edu.amd.spbstu.magiccave.fragments;
 import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,7 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.TextView;
 
+import edu.amd.spbstu.magiccave.MainApplication;
 import edu.amd.spbstu.magiccave.R;
 import edu.amd.spbstu.magiccave.util.GameMode;
 
@@ -79,9 +83,19 @@ public class MenuDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        final Typeface type = MainApplication.RESOURCE_LOADER.getTypeface();
         final View rootView = inflater.inflate(R.layout.fragment_game_menu, container, false);
 
-        rootView.findViewById(R.id.resume_btn).setOnClickListener(new View.OnClickListener() {
+        final Button resumeButton = (Button) rootView.findViewById(R.id.resume_btn);
+        final Button restartButton = (Button) rootView.findViewById(R.id.restart_btn);
+        final Button mainMenuButton = (Button) rootView.findViewById(R.id.main_menu_btn);
+        final Button[] buttons = {resumeButton, restartButton, mainMenuButton};
+
+        for (Button button : buttons) {
+            button.setTypeface(type, Typeface.BOLD);
+        }
+
+        resumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.onGameMenuButtonsClick(MenuButtonType.RESUME);
@@ -89,7 +103,7 @@ public class MenuDialogFragment extends DialogFragment {
             }
         });
 
-        rootView.findViewById(R.id.restart_btn).setOnClickListener(new View.OnClickListener() {
+        restartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.onGameMenuButtonsClick(MenuButtonType.RESTART);
@@ -97,14 +111,14 @@ public class MenuDialogFragment extends DialogFragment {
             }
         });
 
-        rootView.findViewById(R.id.main_menu_btn).setOnClickListener(new View.OnClickListener() {
+        mainMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.onGameMenuButtonsClick(MenuButtonType.MAIN_MENU);
                 MenuDialogFragment.this.dismiss();
             }
         });
-
+        ((TextView) rootView.findViewById(R.id.game_menu_label)).setTypeface(type);
         return rootView;
     }
 

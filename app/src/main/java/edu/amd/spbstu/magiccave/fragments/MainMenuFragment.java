@@ -51,7 +51,7 @@ public class MainMenuFragment extends Fragment {
         final Button rulesButton = (Button) rootView.findViewById(R.id.rules_btn);
         final Button aboutButton = (Button) rootView.findViewById(R.id.about_btn);
         final Button quitButton = (Button) rootView.findViewById(R.id.quit_btn);
-        Button[] buttons = {chsLvlButton, rulesButton, aboutButton, quitButton, rndLvlButton};
+        final Button[] buttons = {chsLvlButton, rulesButton, aboutButton, quitButton, rndLvlButton};
 
         for (Button button: buttons) {
             button.setTypeface(type, Typeface.BOLD);

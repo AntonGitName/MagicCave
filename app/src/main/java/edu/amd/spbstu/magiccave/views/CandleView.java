@@ -20,6 +20,8 @@ import edu.amd.spbstu.magiccave.model.CandleModel;
  */
 public class CandleView extends AnimatedView {
 
+    private static final int SOLVE_ANIMATION_ITERATIONS = 256;
+
     private static final Random RND = new Random();
 
     private final ResourceLoader mResourceLoader;
@@ -30,6 +32,10 @@ public class CandleView extends AnimatedView {
     private int viewW;
     private int viewH;
     private boolean isSizeSet = false;
+    private int solveAnimationTimer;
+    private boolean isSolveAnimationShowing;
+
+    private OnAnimationFinishedListener animationFinishedListener;
 
     public CandleView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -60,9 +66,13 @@ public class CandleView extends AnimatedView {
             @Override
             public void onClick(View view) {
                 mModel.inverseWithNeighbours();
-                listener.onCandleViewClick();
+                listener.onCandleViewClick(true);
             }
         });
+    }
+
+    public CandleModel getModel() {
+        return mModel;
     }
 
     @Override
@@ -86,7 +96,25 @@ public class CandleView extends AnimatedView {
             offsetX = (viewW - mCandleImage.prevFire.getWidth()) / 2;
             canvas.drawBitmap(mCandleImage.prevFire, offsetX, offsetY, mCandleImage.prevFirePaint);
             canvas.drawBitmap(mCandleImage.nextFire, offsetX, offsetY, mCandleImage.nextFirePaint);
+
+            if (isSolveAnimationShowing) {
+                final float t = 6f * (float) Math.PI * (float) solveAnimationTimer / (float) SOLVE_ANIMATION_ITERATIONS;
+                final int x = (int) (viewW * (2.25f + Math.cos(t) * 0.25f)) / 4;
+                final int y = viewH / 2;
+                canvas.drawBitmap(mCandleImage.hand, x, y, mCandleImage.handPaint);
+                if (++solveAnimationTimer == SOLVE_ANIMATION_ITERATIONS) {
+                    finishSolveAnimation();
+                }
+            }
         }
+    }
+
+    private void finishSolveAnimation() {
+        isSolveAnimationShowing = false;
+        solveAnimationTimer = 0;
+        listener.onCandleViewClick(false);
+        animationFinishedListener.onAnimationFinished();
+        animationFinishedListener = null;
     }
 
     @Override
@@ -101,9 +129,11 @@ public class CandleView extends AnimatedView {
         private static final int ITERATIONS_PER_STATE = 64;
 
         public final Paint candlePaint = new Paint();
+        public final Paint handPaint = new Paint();
         public final Paint nextFirePaint = new Paint();
         public final Paint prevFirePaint = new Paint();
         public Bitmap candle;
+        public Bitmap hand;
         public Bitmap[] fire;
         public State state;
 
@@ -116,6 +146,7 @@ public class CandleView extends AnimatedView {
 
         public CandleImage(CandleModel.State modelState) {
             candlePaint.setAntiAlias(true);
+            handPaint.setAntiAlias(true);
             nextFirePaint.setAntiAlias(true);
             prevFirePaint.setAntiAlias(true);
             switch (modelState) {
@@ -195,6 +226,9 @@ public class CandleView extends AnimatedView {
             size.y /= 2;
             candle = rl.getCandleBitmap(size, true);
             fire = rl.getFireBitmaps(size, true);
+            size.x /= 2;
+            size.y /= 2;
+            hand = rl.getHandBitmap(size, true);
             frameNum = RND.nextInt(fire.length);
             animationTimer = RND.nextInt(ITERATIONS_PER_FRAME);
             prevFire = fire[frameNum];
@@ -207,6 +241,17 @@ public class CandleView extends AnimatedView {
     }
 
     public interface OnCandleViewClickListener {
-        void onCandleViewClick();
+        void onCandleViewClick(boolean needCheck);
+    }
+
+    public void playChangeAnimation(OnAnimationFinishedListener listener) {
+        this.isSolveAnimationShowing = true;
+        this.solveAnimationTimer = 0;
+        this.animationFinishedListener = listener;
+        this.mModel.inverseWithNeighbours();
+    }
+
+    public interface OnAnimationFinishedListener {
+        void onAnimationFinished();
     }
 }

@@ -11,7 +11,7 @@ public class CandleModel {
 
     private State mState = State.ON;
     private List<CandleModel> mNeighbourgs = new ArrayList<>();
-    private boolean mIsInversedCorrectly = false;
+    private boolean mIsInversedCorrectly = true;
     private final int mId;
     private final int x;
     private final int y;

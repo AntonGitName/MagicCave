@@ -29,19 +29,35 @@
         <item name="android:background">@drawable/button_background</item>
     </style>
 
-    <style name="GameOptionText">
+    <style name="GameOptionText" parent="DefaultStyle">
         <item name="android:textColor">@color/game_text_color</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">30sp</item>
         <item name="android:background">@drawable/button_background</item>
     </style>
 
-    <style name="GameCounterText">
-        <item name="android:textColor">@color/game_counter_color</item>
-        <item name="android:textSize">20sp</item>
+    <style name="DefaultStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="GameCounterText" parent="DefaultStyle">
+        <item name="android:textColor">@color/game_counter_color</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="GameMenuLabel" parent="DefaultStyle">
+        <item name="android:textColor">@color/game_counter_color</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="GameWinLabel" parent="DefaultStyle">
+        <item name="android:textColor">@color/game_win_color</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="GameWinText" parent="DefaultStyle">
+        <item name="android:textColor">@color/game_win_color</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
 </resources>

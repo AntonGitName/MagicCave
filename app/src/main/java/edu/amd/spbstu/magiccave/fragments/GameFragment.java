@@ -1,14 +1,17 @@
 package edu.amd.spbstu.magiccave.fragments;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
+import edu.amd.spbstu.magiccave.MainApplication;
 import edu.amd.spbstu.magiccave.R;
 import edu.amd.spbstu.magiccave.model.CandlePuzzle;
 import edu.amd.spbstu.magiccave.model.CandlePuzzleBuilder;
@@ -20,7 +23,7 @@ import edu.amd.spbstu.magiccave.views.GameView;
  * @author Anton
  * @since 23.02.2015
  */
-public class GameFragment extends Fragment implements CandleView.OnCandleViewClickListener {
+public class GameFragment extends Fragment implements CandleView.OnCandleViewClickListener, GameView.OnHelpAnimationFinishedListener {
 
     public static final String TAG = "GameFragment";
 
@@ -32,11 +35,13 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
     private GameMode mGameMode;
     private CandlePuzzle candlePuzzle;
     private String initialCandlePuzzle;
-    private int touchCounter;
+    private int moves;
+    private int bestMoves;
 
     private GameView gameView;
     private TextView counterView;
     private OnGameInteractionListener mListener;
+    private Button helpBtn;
 
     public static GameFragment newInstance(GameMode gameMode) {
         GameFragment fragment = new GameFragment();
@@ -57,7 +62,8 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
             mGameMode = GameMode.fromValue(savedInstanceState.getInt(GAME_MODE_KEY));
             candlePuzzle = new CandlePuzzle(savedInstanceState.getString(PUZZLE_KEY));
             initialCandlePuzzle = candlePuzzle.toString();
-            touchCounter = 0;
+            moves = 0;
+            bestMoves = candlePuzzle.getSolution().size();
             Log.v(TAG, "Instance state loaded");
         }
     }
@@ -69,7 +75,7 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
         if (getArguments() != null) {
             mGameMode = GameMode.fromValue(getArguments().getInt(GAME_MODE_KEY));
             candlePuzzle = null;
-            touchCounter = 0;
+            moves = 0;
         }
     }
 
@@ -82,19 +88,43 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
     }
 
     @Override
+    public void onHelpAnimationFinished() {
+        helpBtn.setEnabled(true);
+        gameView.setEnabledCandles(true);
+        checkIfPuzzleSolved();
+    }
+
+    private final class OnHelpButtonClickedListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            helpBtn.setEnabled(false);
+            gameView.setEnabledCandles(false);
+            gameView.showHelpAnimation(GameFragment.this.candlePuzzle.getSolution(), GameFragment.this);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_game, container, false);
+        final Typeface type = MainApplication.RESOURCE_LOADER.getTypeface();
 
         gameView = (GameView) rootView.findViewById(R.id.game_view);
         if (candlePuzzle == null) {
             candlePuzzle = CandlePuzzleBuilder.build(GameView.COLUMNS, GameView.ROWS, DEFAULT_PUZZLE_SIZE);
             initialCandlePuzzle = candlePuzzle.toString();
-            touchCounter = 0;
+            moves = 0;
+            bestMoves = candlePuzzle.getSolution().size();
         }
         gameView.setPuzzle(candlePuzzle, this);
 
-        rootView.findViewById(R.id.game_menu_btn).setOnClickListener(new OnMenuButtonClickListener());
+        helpBtn = (Button) rootView.findViewById(R.id.game_help_btn);
+        helpBtn.setOnClickListener(new OnHelpButtonClickedListener());
+        helpBtn.setTypeface(type);
+        final Button menuBtn = (Button) rootView.findViewById(R.id.game_menu_btn);
+        menuBtn.setOnClickListener(new OnMenuButtonClickListener());
+        menuBtn.setTypeface(type);
         counterView = (TextView) rootView.findViewById(R.id.touch_counter);
 
         return rootView;
@@ -108,8 +138,8 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
             case RESTART:
                 candlePuzzle = new CandlePuzzle(initialCandlePuzzle);
                 gameView.setPuzzle(candlePuzzle, this);
-                touchCounter = 0;
-                counterView.setText("  " + String.valueOf(touchCounter), TextView.BufferType.SPANNABLE);
+                moves = 0;
+                counterView.setText("  " + String.valueOf(moves), TextView.BufferType.SPANNABLE);
                 break;
             case MAIN_MENU:
                 mListener.onGameInteraction();
@@ -118,10 +148,20 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
     }
 
     @Override
-    public void onCandleViewClick() {
-        counterView.setText("  " + String.valueOf(++touchCounter), TextView.BufferType.SPANNABLE);
-        if (candlePuzzle.isSolved()) {
+    public void onCandleViewClick(boolean needCheck) {
+        counterView.setText("  " + String.valueOf(++moves), TextView.BufferType.SPANNABLE);
+        if (needCheck) {
+            checkIfPuzzleSolved();
+        }
+    }
 
+    private void checkIfPuzzleSolved() {
+        if (candlePuzzle.isSolved()) {
+            final MenuDialogFragment menuDialogFragment = (MenuDialogFragment) getFragmentManager().findFragmentByTag(MenuDialogFragment.TAG);
+            if (menuDialogFragment != null) {
+                menuDialogFragment.dismiss();
+            }
+            WinDialogFragment.newInstance(mGameMode, moves, bestMoves).show(getFragmentManager(), WinDialogFragment.TAG);
         }
     }
 
@@ -152,5 +192,27 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
 
     public interface OnGameInteractionListener {
         void onGameInteraction();
+    }
+
+    public void onWinMenuButtonsClick(WinDialogFragment.WinMenuButtonType type) {
+        switch (type) {
+            case RESTART:
+                candlePuzzle = new CandlePuzzle(initialCandlePuzzle);
+                gameView.setPuzzle(candlePuzzle, this);
+                moves = 0;
+                counterView.setText("  " + String.valueOf(moves), TextView.BufferType.SPANNABLE);
+                break;
+            case NEXT:
+                candlePuzzle = CandlePuzzleBuilder.build(GameView.COLUMNS, GameView.ROWS, DEFAULT_PUZZLE_SIZE);
+                initialCandlePuzzle = candlePuzzle.toString();
+                gameView.setPuzzle(candlePuzzle, this);
+                moves = 0;
+                bestMoves = candlePuzzle.getSolution().size();
+                counterView.setText("  " + String.valueOf(moves), TextView.BufferType.SPANNABLE);
+                break;
+            case MAIN_MENU:
+                mListener.onGameInteraction();
+                break;
+        }
     }
 }

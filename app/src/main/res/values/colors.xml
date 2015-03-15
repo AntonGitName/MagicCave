@@ -7,5 +7,6 @@
     <color name="main_menu_label_color">#FFD700</color>
     <color name="rules_page_text_color">#5E2612</color>
     <color name="game_counter_color">#e32323</color>
+    <color name="game_win_color">#6b23e3</color>
 
 </resources>

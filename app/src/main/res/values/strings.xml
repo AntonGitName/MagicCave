@@ -21,6 +21,11 @@
     <string name="game_resume_btn">Resume</string>
     <string name="game_main_menu_btn">Main menu</string>
     <string name="game_restart_btn">Restart</string>
+    <string name="game_next_btn">Next</string>
+    <string name="game_menu_label">Menu</string>
+    <string name="game_win_label">Congratulations!</string>
+    <string name="game_win_text" formatted="false">You solved the puzzle in %d moves. The best solution takes %d moves.</string>
+    <string name="game_help_text">Help</string>
 
     <!-- Applied Math Department Activity -->
     <string name="about_app_name">Applied Math Dep</string>
