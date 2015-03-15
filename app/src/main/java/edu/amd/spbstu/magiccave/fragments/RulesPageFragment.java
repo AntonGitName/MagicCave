@@ -1,6 +1,5 @@
 package edu.amd.spbstu.magiccave.fragments;
 
-import android.app.Activity;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -20,7 +19,8 @@ import edu.amd.spbstu.magiccave.MainApplication;
 import edu.amd.spbstu.magiccave.R;
 
 /**
- * Created by Anton on 23.02.2015.
+ * @author Anton
+ * @since 23.02.2015
  */
 public class RulesPageFragment extends Fragment {
 
@@ -33,11 +33,8 @@ public class RulesPageFragment extends Fragment {
 
     private List<View> pages;
 
-    private OnRulesPageInteractionListener mListener;
-
     public static RulesPageFragment newInstance() {
-        RulesPageFragment fragment = new RulesPageFragment();
-        return fragment;
+        return new RulesPageFragment();
     }
 
     public RulesPageFragment() {
@@ -71,28 +68,6 @@ public class RulesPageFragment extends Fragment {
         candle = (ImageView) rootView.findViewById(R.id.candleViewRight);
         candleAnimation = (AnimationDrawable) candle.getDrawable();
         candleAnimation.start();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnRulesPageInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnRulesPageInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnRulesPageInteractionListener {
-        // TODO: Update argument type and name
-        public void onRulesPageInteraction();
     }
 
     public static final class PageFragment extends Fragment {

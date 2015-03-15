@@ -9,7 +9,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Created by iAnton on 09/03/15.
+ * @author iAnton
+ * @since 09/03/15
  */
 public class CandlePuzzleBuilder {
 

@@ -3,7 +3,6 @@ package edu.amd.spbstu.magiccave.views;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.AttributeSet;
@@ -16,7 +15,8 @@ import edu.amd.spbstu.magiccave.MainApplication;
 import edu.amd.spbstu.magiccave.model.CandleModel;
 
 /**
- * Created by iAnton on 09/03/15.
+ * @author iAnton
+ * @since 09/03/15
  */
 public class CandleView extends AnimatedView {
 
@@ -25,6 +25,7 @@ public class CandleView extends AnimatedView {
     private final ResourceLoader mResourceLoader;
     private final CandleImage mCandleImage;
     private final CandleModel mModel;
+    private final OnCandleViewClickListener listener;
 
     private int viewW;
     private int viewH;
@@ -35,6 +36,7 @@ public class CandleView extends AnimatedView {
         this.mResourceLoader = MainApplication.RESOURCE_LOADER;
         this.mModel = new CandleModel(1, 1);
         this.mCandleImage = new CandleImage(mModel.getState());
+        this.listener = null;
 
         setOnClickListener(new View.OnClickListener() {
 
@@ -45,18 +47,20 @@ public class CandleView extends AnimatedView {
         });
     }
 
-    public CandleView(Context ctx, CandleModel model) {
+    public CandleView(Context ctx, CandleModel model, final OnCandleViewClickListener listener) {
         super(ctx);
 
-        mModel = model;
-        mResourceLoader = MainApplication.RESOURCE_LOADER;
-        mCandleImage = new CandleImage(model.getState());
+        this.mModel = model;
+        this.mResourceLoader = MainApplication.RESOURCE_LOADER;
+        this.mCandleImage = new CandleImage(model.getState());
+        this.listener = listener;
 
         setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 mModel.inverseWithNeighbours();
+                listener.onCandleViewClick();
             }
         });
     }
@@ -197,8 +201,12 @@ public class CandleView extends AnimatedView {
             nextFire = fire[(frameNum + 1) % fire.length];
         }
 
-        private static enum State {
-            LIGHT, GOING_DOWN, GOING_UP, DARK;
+        private enum State {
+            LIGHT, GOING_DOWN, GOING_UP, DARK
         }
+    }
+
+    public interface OnCandleViewClickListener {
+        void onCandleViewClick();
     }
 }

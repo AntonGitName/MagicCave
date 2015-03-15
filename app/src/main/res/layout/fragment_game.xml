@@ -11,11 +11,10 @@
         android:layout_height="match_parent"
         android:layout_weight="6">
 
-        <Button
-            style="@style/GameOptionText"
-            android:id="@+id/button"
-            android:layout_gravity="left|top"
-            android:text="New Button" />
+        <TextView
+            style="@style/GameCounterText"
+            android:id="@+id/touch_counter"
+            android:layout_gravity="left|center_vertical" />
 
 
         <Button

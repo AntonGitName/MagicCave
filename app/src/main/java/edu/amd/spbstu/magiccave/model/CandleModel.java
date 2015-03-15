@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by iAnton on 09/03/15.
+ * @author iAnton
+ * @since 09/03/15
  */
 public class CandleModel {
 
@@ -16,6 +17,14 @@ public class CandleModel {
     private final int y;
 
     private static int lastId = 0;
+
+    public CandleModel(int x, int y, int id, boolean isInversedCorrectly, String state) {
+        this.mId = id;
+        this.mState = State.valueOf(state);
+        this.mIsInversedCorrectly = isInversedCorrectly;
+        this.x = x;
+        this.y = y;
+    }
 
     public CandleModel(int x, int y) {
         mId = ++lastId;

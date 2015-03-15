@@ -14,7 +14,8 @@ import java.util.Map;
 import edu.amd.spbstu.magiccave.R;
 
 /**
- * Created by Anton on 23.02.2015.
+ * @author Anton
+ * @since 23.02.2015
  */
 public class ResourceLoader {
 

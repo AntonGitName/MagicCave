@@ -2,7 +2,6 @@ package edu.amd.spbstu.magiccave;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -11,18 +10,19 @@ import com.spbstu.appmathdep.AboutActivity;
 
 import edu.amd.spbstu.magiccave.fragments.GameFragment;
 import edu.amd.spbstu.magiccave.fragments.MainMenuFragment;
+import edu.amd.spbstu.magiccave.fragments.MenuDialogFragment;
 import edu.amd.spbstu.magiccave.fragments.RulesPageFragment;
 import edu.amd.spbstu.magiccave.util.GameMode;
 
 /**
- * Created by Anton on 22.02.2015.
+ * @author Anton
+ * @since 22.02.2015
  */
 public class MainMenuActivity extends FragmentActivity implements MainMenuFragment.OnMainMenuOptionSelectedListener
-        , RulesPageFragment.OnRulesPageInteractionListener
-        , GameFragment.OnGameInteractionListener {
+        , GameFragment.OnGameInteractionListener
+        , MenuDialogFragment.OnGameMenuButtonsClickListener {
 
     public static final String TAG = "MainMenuActivity";
-
 
     private MediaPlayer mediaPlayer;
 
@@ -103,12 +103,15 @@ public class MainMenuActivity extends FragmentActivity implements MainMenuFragme
     }
 
     @Override
-    public void onRulesPageInteraction() {
-        // getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, MainMenuFragment.newInstance(), MainMenuFragment.TAG).commit();
+    public void onGameInteraction() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, MainMenuFragment.newInstance(), MainMenuFragment.TAG).commit();
     }
 
     @Override
-    public void onGameInteraction(Uri uri) {
-
+    public void onGameMenuButtonsClick(MenuDialogFragment.MenuButtonType type) {
+        final GameFragment gameFragment = (GameFragment) getSupportFragmentManager().findFragmentByTag(GameFragment.TAG);
+        if (gameFragment != null) {
+            gameFragment.onGameMenuButtonsClick(type);
+        }
     }
 }

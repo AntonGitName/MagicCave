@@ -2,7 +2,6 @@ package edu.amd.spbstu.magiccave.fragments;
 
 import android.app.Activity;
 import android.graphics.Typeface;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,14 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import edu.amd.spbstu.magiccave.MainApplication;
 import edu.amd.spbstu.magiccave.R;
 
 /**
- * Created by Anton on 23.02.2015.
+ * @author Anton
+ * @since 23.02.2015
  */
 public class MainMenuFragment extends Fragment {
     public static final String TAG = "MainMenuFragment";
@@ -25,8 +24,7 @@ public class MainMenuFragment extends Fragment {
     private OnMainMenuOptionSelectedListener mListener;
 
     public static MainMenuFragment newInstance() {
-        MainMenuFragment fragment = new MainMenuFragment();
-        return fragment;
+        return new MainMenuFragment();
     }
 
     public MainMenuFragment() {
@@ -136,7 +134,7 @@ public class MainMenuFragment extends Fragment {
     }
 
     public interface OnMainMenuOptionSelectedListener {
-        public void onMainMenuOptionSelected(MainMenuOption option);
+        void onMainMenuOptionSelected(MainMenuOption option);
     }
 
 }

@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -39,8 +40,7 @@ public class AboutActivity extends Activity implements  OnCompletionListener, Vi
 	// *************************************************
 	// METHODS
 	// *************************************************
-	protected void onCreate(Bundle savedInstanceState) 
-	{
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //overridePendingTransition(0, 0);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -50,42 +50,33 @@ public class AboutActivity extends Activity implements  OnCompletionListener, Vi
 
         Intent intent = getIntent();
 
-        if (intent != null) {
-            isModeStart = intent.getBooleanExtra(ABOUT_ACTIVITY_MODE_KEY, true);
-        } else {
-            isModeStart = true;
-        }
+        isModeStart = intent == null || intent.getBooleanExtra(ABOUT_ACTIVITY_MODE_KEY, true);
 
         // Detect language
         String strLang = Locale.getDefault().getDisplayLanguage();
         int language;
-        if (strLang.equalsIgnoreCase("english"))
-        {
-        	Log.d("AMDEPTH", "LOCALE: English");
-        	language = AppIntro.LANGUAGE_ENG;
-        }
-        else if (strLang.equalsIgnoreCase("русский"))
-        {
-        	Log.d("AMDEPTH", "LOCALE: Russian");
-        	language = AppIntro.LANGUAGE_RUS;
-        }
-        else
-        {
-        	Log.d("AMDEPTH", "LOCALE unknown: " + strLang);
-        	language = AppIntro.LANGUAGE_UNKNOWN;
-        	//AlertDialog alertDialog;
-        	//alertDialog = new AlertDialog.Builder(this).create();
-        	//alertDialog.setTitle("Language settings");
-        	//alertDialog.setMessage("This application available only in English or Russian language.");
-        	//alertDialog.show();        	
+        if (strLang.equalsIgnoreCase("english")) {
+            Log.d("AMDEPTH", "LOCALE: English");
+            language = AppIntro.LANGUAGE_ENG;
+        } else if (strLang.equalsIgnoreCase("русский")) {
+            Log.d("AMDEPTH", "LOCALE: Russian");
+            language = AppIntro.LANGUAGE_RUS;
+        } else {
+            Log.d("AMDEPTH", "LOCALE unknown: " + strLang);
+            language = AppIntro.LANGUAGE_UNKNOWN;
+            //AlertDialog alertDialog;
+            //alertDialog = new AlertDialog.Builder(this).create();
+            //alertDialog.setTitle("Language settings");
+            //alertDialog.setMessage("This application available only in English or Russian language.");
+            //alertDialog.show();
         }
         // Create application
         m_app = new AppIntro(this, language, isModeStart);
         // Create view
         m_appView = new AppView(this);
         setContentView(m_appView);
-		
-	}
+
+    }
 
 	protected void onPostCreate(Bundle savedInstanceState) 
 	{
@@ -106,7 +97,6 @@ public class AboutActivity extends Activity implements  OnCompletionListener, Vi
 	public synchronized void startMainMenu() {
         if (isMainMenuStarted) {
             Intent intent = new Intent(this, MainMenuActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             finish();
             startActivity(intent);
             isMainMenuStarted = false;
@@ -124,18 +114,18 @@ public class AboutActivity extends Activity implements  OnCompletionListener, Vi
 			touchType = AppIntro.TOUCH_UP;
     	return m_appView.onTouch( x, y, touchType);
     }
-    public boolean onKeyDown(int keyCode, KeyEvent evt)
+
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent evt)
     {
-		if (keyCode == KeyEvent.KEYCODE_BACK)
-		{
-			//Log.d("SPARTA", "Back key pressed");
+//		if (keyCode == KeyEvent.KEYCODE_BACK)
+//		{
+        //Log.d("SPARTA", "Back key pressed");
 			//boolean wantKill = m_app.onKey(Application.KEY_BACK);
 			//if (wantKill)
 		    //		finish();
 			//return true;
-		}
-    	boolean ret = super.onKeyDown(keyCode, evt);
-    	return ret;
+//		}
+        return super.onKeyDown(keyCode, evt);
     }
     public AppIntro getApp()
     {

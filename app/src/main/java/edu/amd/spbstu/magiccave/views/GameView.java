@@ -1,12 +1,10 @@
 package edu.amd.spbstu.magiccave.views;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -14,7 +12,8 @@ import edu.amd.spbstu.magiccave.model.CandleModel;
 import edu.amd.spbstu.magiccave.model.CandlePuzzle;
 
 /**
- * Created by iAnton on 09/03/15.
+ * @author iAnton
+ * @since 09/03/15
  */
 public class GameView extends TableLayout {
 
@@ -27,9 +26,11 @@ public class GameView extends TableLayout {
         super(context, attrs);
     }
 
-    public void setPuzzle(CandlePuzzle puzzle) {
+    public void setPuzzle(CandlePuzzle puzzle, CandleView.OnCandleViewClickListener listener) {
         this.mPuzzle = puzzle;
         List<CandleModel> candles = puzzle.getCandles();
+
+        removeAllViews();
 
         for (int i = 0; i < ROWS; ++i) {
             TableRow row = new TableRow(getContext());
@@ -44,7 +45,7 @@ public class GameView extends TableLayout {
                     }
                 }
                 if (haveCandleHere != null) {
-                    row.addView(new CandleView(getContext(), haveCandleHere));
+                    row.addView(new CandleView(getContext(), haveCandleHere, listener));
                 } else {
                     row.addView(new View(getContext()));
                 }

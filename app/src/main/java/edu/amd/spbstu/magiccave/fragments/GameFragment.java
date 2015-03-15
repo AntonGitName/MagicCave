@@ -1,29 +1,41 @@
 package edu.amd.spbstu.magiccave.fragments;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import edu.amd.spbstu.magiccave.R;
+import edu.amd.spbstu.magiccave.model.CandlePuzzle;
 import edu.amd.spbstu.magiccave.model.CandlePuzzleBuilder;
 import edu.amd.spbstu.magiccave.util.GameMode;
+import edu.amd.spbstu.magiccave.views.CandleView;
 import edu.amd.spbstu.magiccave.views.GameView;
 
 /**
- * Created by Anton on 23.02.2015.
+ * @author Anton
+ * @since 23.02.2015
  */
-public class GameFragment extends Fragment {
+public class GameFragment extends Fragment implements CandleView.OnCandleViewClickListener {
 
     public static final String TAG = "GameFragment";
 
     private static final String GAME_MODE_KEY = "GAME_MODE_KEY";
+    private static final String PUZZLE_KEY = "PUZZLE_KEY";
+
+    private static final int DEFAULT_PUZZLE_SIZE = 7;
 
     private GameMode mGameMode;
+    private CandlePuzzle candlePuzzle;
+    private String initialCandlePuzzle;
+    private int touchCounter;
 
+    private GameView gameView;
+    private TextView counterView;
     private OnGameInteractionListener mListener;
 
     public static GameFragment newInstance(GameMode gameMode) {
@@ -39,11 +51,34 @@ public class GameFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            mGameMode = GameMode.fromValue(savedInstanceState.getInt(GAME_MODE_KEY));
+            candlePuzzle = new CandlePuzzle(savedInstanceState.getString(PUZZLE_KEY));
+            initialCandlePuzzle = candlePuzzle.toString();
+            touchCounter = 0;
+            Log.v(TAG, "Instance state loaded");
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mGameMode = GameMode.fromValue(getArguments().getInt(GAME_MODE_KEY));
+            candlePuzzle = null;
+            touchCounter = 0;
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(GAME_MODE_KEY, mGameMode.getValue());
+        outState.putString(PUZZLE_KEY, candlePuzzle.toString());
+        Log.v(TAG, "Instance state saved");
     }
 
     @Override
@@ -51,16 +86,50 @@ public class GameFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_game, container, false);
 
-        final GameView gameView = (GameView) rootView.findViewById(R.id.game_view);
-        gameView.setPuzzle(CandlePuzzleBuilder.build(GameView.COLUMNS, GameView.ROWS, 7));
+        gameView = (GameView) rootView.findViewById(R.id.game_view);
+        if (candlePuzzle == null) {
+            candlePuzzle = CandlePuzzleBuilder.build(GameView.COLUMNS, GameView.ROWS, DEFAULT_PUZZLE_SIZE);
+            initialCandlePuzzle = candlePuzzle.toString();
+            touchCounter = 0;
+        }
+        gameView.setPuzzle(candlePuzzle, this);
+
+        rootView.findViewById(R.id.game_menu_btn).setOnClickListener(new OnMenuButtonClickListener());
+        counterView = (TextView) rootView.findViewById(R.id.touch_counter);
 
         return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onGameInteraction(uri);
+    public void onGameMenuButtonsClick(MenuDialogFragment.MenuButtonType type) {
+        switch (type) {
+
+            case RESUME:
+                break;
+            case RESTART:
+                candlePuzzle = new CandlePuzzle(initialCandlePuzzle);
+                gameView.setPuzzle(candlePuzzle, this);
+                touchCounter = 0;
+                counterView.setText("  " + String.valueOf(touchCounter), TextView.BufferType.SPANNABLE);
+                break;
+            case MAIN_MENU:
+                mListener.onGameInteraction();
+                break;
+        }
+    }
+
+    @Override
+    public void onCandleViewClick() {
+        counterView.setText("  " + String.valueOf(++touchCounter), TextView.BufferType.SPANNABLE);
+        if (candlePuzzle.isSolved()) {
+
+        }
+    }
+
+    private final class OnMenuButtonClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            MenuDialogFragment.newInstance(mGameMode).show(GameFragment.this.getFragmentManager(), MenuDialogFragment.TAG);
         }
     }
 
@@ -81,18 +150,7 @@ public class GameFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnGameInteractionListener {
-        // TODO: Update argument type and name
-        public void onGameInteraction(Uri uri);
+        void onGameInteraction();
     }
 }
