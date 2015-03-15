@@ -3,89 +3,109 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/main_menu_background"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/main_menu_label"
-        android:layout_marginTop="10dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="@string/title_activity_main_menu"
-        android:textColor="@color/main_menu_label_color"
-        android:textSize="50sp" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/main_menu_label"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:text="@string/title_activity_main_menu"
+            android:textColor="@color/main_menu_label_color"
+            android:textSize="50sp" />
+
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_action_volume_on" />
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
-        <edu.amd.spbstu.magiccave.views.CandleView
+        <ImageView
+            android:id="@+id/candleViewLeft"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:src="@drawable/fire_candle_animation" />
+
+        <!--<edu.amd.spbstu.magiccave.views.CandleView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:layout_weight="1" />-->
 
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:gravity="center" >
+            android:gravity="center">
 
-            <TableRow android:gravity="center" >
+            <TableRow android:gravity="center">
 
                 <Button
-                    style="@style/MainMenuOptionText"
                     android:id="@+id/choose_level_btn"
+                    style="@style/MainMenuOptionText"
                     android:text="@string/choose_level_btn" />
             </TableRow>
 
-            <TableRow android:gravity="center" >
+            <TableRow android:gravity="center">
 
                 <Button
-                    style="@style/MainMenuOptionText"
                     android:id="@+id/random_level_btn"
+                    style="@style/MainMenuOptionText"
                     android:text="@string/random_level_btn" />
             </TableRow>
 
-            <TableRow android:gravity="center" >
+            <TableRow android:gravity="center">
 
                 <Button
-                    style="@style/MainMenuOptionText"
                     android:id="@+id/rules_btn"
+                    style="@style/MainMenuOptionText"
                     android:text="@string/rules_btn" />
             </TableRow>
 
-            <TableRow android:gravity="center" >
+            <TableRow android:gravity="center">
 
                 <Button
-                    style="@style/MainMenuOptionText"
                     android:id="@+id/about_btn"
+                    style="@style/MainMenuOptionText"
                     android:text="@string/about_btn" />
             </TableRow>
 
-            <TableRow android:gravity="center" >
+            <TableRow android:gravity="center">
 
                 <Button
-                    style="@style/MainMenuOptionText"
                     android:id="@+id/quit_btn"
+                    style="@style/MainMenuOptionText"
                     android:text="@string/quit_btn" />
             </TableRow>
         </TableLayout>
 
-        <edu.amd.spbstu.magiccave.views.CandleView
+        <!--<edu.amd.spbstu.magiccave.views.CandleView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:layout_weight="1" />-->
+
+        <ImageView
+            android:id="@+id/candleViewRight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_weight="1" />
-
-        <!--<ImageView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:src="@drawable/fire_candle_animation"-->
-            <!--android:id="@+id/candleViewRight" />-->
+            android:layout_weight="1"
+            android:src="@drawable/fire_candle_animation" />
 
     </LinearLayout>
 

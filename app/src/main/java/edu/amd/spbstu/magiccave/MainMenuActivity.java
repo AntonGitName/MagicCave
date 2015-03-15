@@ -75,8 +75,14 @@ public class MainMenuActivity extends FragmentActivity implements MainMenuFragme
             case ABOUT:
                 onAboutButtonClicked();
                 break;
+            case SOUND:
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                } else {
+                    mediaPlayer.start();
+                }
+                break;
             case EXIT:
-                // android.os.Process.killProcess(android.os.Process.myPid());
                 finish();
                 break;
         }

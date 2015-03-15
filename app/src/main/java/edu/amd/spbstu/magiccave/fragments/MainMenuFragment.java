@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import edu.amd.spbstu.magiccave.MainApplication;
@@ -22,13 +23,14 @@ public class MainMenuFragment extends Fragment {
     public static final String TAG = "MainMenuFragment";
 
     private OnMainMenuOptionSelectedListener mListener;
-
-    public static MainMenuFragment newInstance() {
-        return new MainMenuFragment();
-    }
+    private int soundImageResource;
 
     public MainMenuFragment() {
         // Required empty public constructor
+    }
+
+    public static MainMenuFragment newInstance() {
+        return new MainMenuFragment();
     }
 
     @Override
@@ -45,6 +47,18 @@ public class MainMenuFragment extends Fragment {
         Log.d(TAG, "Setting up main menu buttons");
 
         final Typeface type = MainApplication.RESOURCE_LOADER.getTypeface();
+
+        final ImageView soundSwitchBtn = (ImageView) rootView.findViewById(R.id.image_view);
+        soundImageResource = R.drawable.ic_action_volume_on;
+
+        soundSwitchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onMainMenuOptionSelected(MainMenuOption.SOUND);
+                soundImageResource = soundImageResource == R.drawable.ic_action_volume_on ? R.drawable.ic_action_volume_muted : R.drawable.ic_action_volume_on;
+                soundSwitchBtn.setImageDrawable(getResources().getDrawable(soundImageResource));
+            }
+        });
 
         final Button chsLvlButton = (Button) rootView.findViewById(R.id.choose_level_btn);
         final Button rndLvlButton = (Button) rootView.findViewById(R.id.random_level_btn);
@@ -130,6 +144,7 @@ public class MainMenuFragment extends Fragment {
         RANDOM,
         RULES,
         ABOUT,
+        SOUND,
         EXIT
     }
 

@@ -102,7 +102,8 @@ public class CandleView extends AnimatedView {
                 final int x = (int) (viewW * (2.25f + Math.cos(t) * 0.25f)) / 4;
                 final int y = viewH / 2;
                 canvas.drawBitmap(mCandleImage.hand, x, y, mCandleImage.handPaint);
-                if (++solveAnimationTimer == SOLVE_ANIMATION_ITERATIONS) {
+                ++solveAnimationTimer;
+                if (solveAnimationTimer == SOLVE_ANIMATION_ITERATIONS) {
                     finishSolveAnimation();
                 }
             }
@@ -124,6 +125,21 @@ public class CandleView extends AnimatedView {
         drawCandleImage(canvas);
     }
 
+    public void playChangeAnimation(OnAnimationFinishedListener listener) {
+        this.isSolveAnimationShowing = true;
+        this.solveAnimationTimer = 0;
+        this.animationFinishedListener = listener;
+        this.mModel.inverseWithNeighbours();
+    }
+
+    public interface OnCandleViewClickListener {
+        void onCandleViewClick(boolean needCheck);
+    }
+
+    public interface OnAnimationFinishedListener {
+        void onAnimationFinished();
+    }
+
     private static final class CandleImage {
         private static final int ITERATIONS_PER_FRAME = 16;
         private static final int ITERATIONS_PER_STATE = 64;
@@ -136,13 +152,11 @@ public class CandleView extends AnimatedView {
         public Bitmap hand;
         public Bitmap[] fire;
         public State state;
-
+        public Bitmap nextFire;
+        public Bitmap prevFire;
         private int animationTimer;
         private int stateTimer;
         private int frameNum;
-
-        public Bitmap nextFire;
-        public Bitmap prevFire;
 
         public CandleImage(CandleModel.State modelState) {
             candlePaint.setAntiAlias(true);
@@ -238,20 +252,5 @@ public class CandleView extends AnimatedView {
         private enum State {
             LIGHT, GOING_DOWN, GOING_UP, DARK
         }
-    }
-
-    public interface OnCandleViewClickListener {
-        void onCandleViewClick(boolean needCheck);
-    }
-
-    public void playChangeAnimation(OnAnimationFinishedListener listener) {
-        this.isSolveAnimationShowing = true;
-        this.solveAnimationTimer = 0;
-        this.animationFinishedListener = listener;
-        this.mModel.inverseWithNeighbours();
-    }
-
-    public interface OnAnimationFinishedListener {
-        void onAnimationFinished();
     }
 }
