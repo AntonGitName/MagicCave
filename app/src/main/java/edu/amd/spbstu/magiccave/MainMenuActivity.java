@@ -3,6 +3,7 @@ package edu.amd.spbstu.magiccave;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
@@ -25,8 +26,16 @@ public class MainMenuActivity extends FragmentActivity implements MainMenuFragme
         , WinDialogFragment.OnWinMenuButtonsClickListener {
 
     public static final String TAG = "MainMenuActivity";
+    private static final String SOUND_SWITCH_KEY = "SOUND_SWITCH_KEY";
 
     private MediaPlayer mediaPlayer;
+    private boolean isMusicPlaying;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SOUND_SWITCH_KEY, isMusicPlaying);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +44,15 @@ public class MainMenuActivity extends FragmentActivity implements MainMenuFragme
         setContentView(R.layout.activity_main_menu);
 
         if (savedInstanceState == null) {
+            isMusicPlaying = true;
             startFragment();
+        } else {
+            isMusicPlaying = savedInstanceState.getBoolean(SOUND_SWITCH_KEY);
         }
     }
 
     private void startFragment() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, MainMenuFragment.newInstance(), MainMenuFragment.TAG).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, MainMenuFragment.newInstance(isMusicPlaying), MainMenuFragment.TAG).commit();
     }
 
     @Override
@@ -50,7 +62,9 @@ public class MainMenuActivity extends FragmentActivity implements MainMenuFragme
         Log.w(TAG, "Starting player");
         mediaPlayer = MediaPlayer.create(this, R.raw.background_music);
         mediaPlayer.setLooping(true);
-        mediaPlayer.start();
+        if (isMusicPlaying) {
+            mediaPlayer.start();
+        }
     }
 
     @Override
@@ -63,7 +77,6 @@ public class MainMenuActivity extends FragmentActivity implements MainMenuFragme
     @Override
     public void onMainMenuOptionSelected(MainMenuFragment.MainMenuOption option) {
         switch (option){
-
             case SCENARIO:
                 break;
             case RANDOM:
@@ -76,6 +89,7 @@ public class MainMenuActivity extends FragmentActivity implements MainMenuFragme
                 onAboutButtonClicked();
                 break;
             case SOUND:
+                isMusicPlaying = !isMusicPlaying;
                 if (mediaPlayer.isPlaying()) {
                     mediaPlayer.pause();
                 } else {
@@ -112,7 +126,15 @@ public class MainMenuActivity extends FragmentActivity implements MainMenuFragme
 
     @Override
     public void onGameInteraction() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, MainMenuFragment.newInstance(), MainMenuFragment.TAG).commit();
+        DialogFragment dialogFragment = (DialogFragment) getSupportFragmentManager().findFragmentByTag(MenuDialogFragment.TAG);
+        if (dialogFragment != null) {
+            dialogFragment.dismiss();
+        }
+        dialogFragment = (DialogFragment) getSupportFragmentManager().findFragmentByTag(WinDialogFragment.TAG);
+        if (dialogFragment != null) {
+            dialogFragment.dismiss();
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, MainMenuFragment.newInstance(isMusicPlaying), MainMenuFragment.TAG).commit();
     }
 
     @Override

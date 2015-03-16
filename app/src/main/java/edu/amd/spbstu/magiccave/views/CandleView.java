@@ -20,7 +20,7 @@ import edu.amd.spbstu.magiccave.model.CandleModel;
  */
 public class CandleView extends AnimatedView {
 
-    private static final int SOLVE_ANIMATION_ITERATIONS = 256;
+    private static final int SOLVE_ANIMATION_ITERATIONS = 128;
 
     private static final Random RND = new Random();
 
@@ -88,25 +88,34 @@ public class CandleView extends AnimatedView {
         if (isSizeSet) {
             mCandleImage.setState(mModel.getState());
 
-            mCandleImage.incTimer();
-            int offsetX = (viewW - mCandleImage.candle.getWidth()) / 2;
-            int offsetY = (viewH - mCandleImage.candle.getHeight() - mCandleImage.nextFire.getHeight()) / 2;
-            canvas.drawBitmap(mCandleImage.candle, offsetX, offsetY + viewH / 2, mCandleImage.candlePaint);
-
-            offsetX = (viewW - mCandleImage.prevFire.getWidth()) / 2;
-            canvas.drawBitmap(mCandleImage.prevFire, offsetX, offsetY, mCandleImage.prevFirePaint);
-            canvas.drawBitmap(mCandleImage.nextFire, offsetX, offsetY, mCandleImage.nextFirePaint);
-
+            drawCandle(canvas);
             if (isSolveAnimationShowing) {
-                final float t = 6f * (float) Math.PI * (float) solveAnimationTimer / (float) SOLVE_ANIMATION_ITERATIONS;
-                final int x = (int) (viewW * (2.25f + Math.cos(t) * 0.25f)) / 4;
-                final int y = viewH / 2;
-                canvas.drawBitmap(mCandleImage.hand, x, y, mCandleImage.handPaint);
-                ++solveAnimationTimer;
-                if (solveAnimationTimer == SOLVE_ANIMATION_ITERATIONS) {
-                    finishSolveAnimation();
-                }
+                drawSolveAnimation(canvas);
             }
+        }
+    }
+
+    private void drawCandle(Canvas canvas) {
+        mCandleImage.incTimer();
+        int offsetX = (viewW - mCandleImage.candle.getWidth()) / 2;
+        int offsetY = (viewH - mCandleImage.candle.getHeight() - mCandleImage.nextFire.getHeight()) / 2;
+        canvas.drawBitmap(mCandleImage.candle, offsetX, offsetY + viewH / 2, mCandleImage.candlePaint);
+        offsetX = (viewW - mCandleImage.prevFire.getWidth()) / 2;
+        canvas.drawBitmap(mCandleImage.prevFire, offsetX, offsetY, mCandleImage.prevFirePaint);
+        canvas.drawBitmap(mCandleImage.nextFire, offsetX, offsetY, mCandleImage.nextFirePaint);
+    }
+
+    private void drawSolveAnimation(Canvas canvas) {
+        final float t = 6f * (float) Math.PI * (float) solveAnimationTimer / (float) SOLVE_ANIMATION_ITERATIONS;
+        final int x = (int) (viewW * (2.25f + Math.cos(t) * 0.25f)) / 4;
+        final int y = viewH / 2;
+        canvas.drawBitmap(mCandleImage.hand, x, y, mCandleImage.handPaint);
+        ++solveAnimationTimer;
+        if (solveAnimationTimer == SOLVE_ANIMATION_ITERATIONS / 2) {
+            this.mModel.inverseWithNeighbours();
+        }
+        if (solveAnimationTimer == SOLVE_ANIMATION_ITERATIONS) {
+            finishSolveAnimation();
         }
     }
 
@@ -129,7 +138,6 @@ public class CandleView extends AnimatedView {
         this.isSolveAnimationShowing = true;
         this.solveAnimationTimer = 0;
         this.animationFinishedListener = listener;
-        this.mModel.inverseWithNeighbours();
     }
 
     public interface OnCandleViewClickListener {

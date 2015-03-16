@@ -43,16 +43,16 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
     private OnGameInteractionListener mListener;
     private Button helpBtn;
 
+    public GameFragment() {
+        // Required empty public constructor
+    }
+
     public static GameFragment newInstance(GameMode gameMode) {
         GameFragment fragment = new GameFragment();
         Bundle args = new Bundle();
         args.putInt(GAME_MODE_KEY, gameMode.getValue());
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public GameFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -92,16 +92,6 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
         helpBtn.setEnabled(true);
         gameView.setEnabledCandles(true);
         checkIfPuzzleSolved();
-    }
-
-    private final class OnHelpButtonClickedListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View view) {
-            helpBtn.setEnabled(false);
-            gameView.setEnabledCandles(false);
-            gameView.showHelpAnimation(GameFragment.this.candlePuzzle.getSolution(), GameFragment.this);
-        }
     }
 
     @Override
@@ -161,15 +151,9 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
             if (menuDialogFragment != null) {
                 menuDialogFragment.dismiss();
             }
+            gameView.setEnabledCandles(true);
+            gameView.setLinesVisible(true);
             WinDialogFragment.newInstance(mGameMode, moves, bestMoves).show(getFragmentManager(), WinDialogFragment.TAG);
-        }
-    }
-
-    private final class OnMenuButtonClickListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View view) {
-            MenuDialogFragment.newInstance(mGameMode).show(GameFragment.this.getFragmentManager(), MenuDialogFragment.TAG);
         }
     }
 
@@ -188,10 +172,6 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    public interface OnGameInteractionListener {
-        void onGameInteraction();
     }
 
     public void onWinMenuButtonsClick(WinDialogFragment.WinMenuButtonType type) {
@@ -213,6 +193,29 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
             case MAIN_MENU:
                 mListener.onGameInteraction();
                 break;
+        }
+    }
+
+    public interface OnGameInteractionListener {
+        void onGameInteraction();
+    }
+
+    private final class OnHelpButtonClickedListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            helpBtn.setEnabled(false);
+            gameView.setEnabledCandles(false);
+            gameView.showHelpAnimation(GameFragment.this.candlePuzzle.getSolution(), GameFragment.this);
+            gameView.setLinesVisible(true);
+        }
+    }
+
+    private final class OnMenuButtonClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            MenuDialogFragment.newInstance(mGameMode).show(GameFragment.this.getFragmentManager(), MenuDialogFragment.TAG);
         }
     }
 }

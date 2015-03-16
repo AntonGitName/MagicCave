@@ -1,6 +1,9 @@
 package edu.amd.spbstu.magiccave.views;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TableLayout;
@@ -21,21 +24,34 @@ public class GameView extends TableLayout implements CandleView.OnAnimationFinis
     public static final int ROWS = 3;
     public static final int COLUMNS = 4;
 
+    private static final int DEFAULT_LINE_ALPHA = 100;
+    private static final float LINE_WIDTH = 4f;
+
     private List<CandleView> candleViews;
+    private List<CandleView> candlesToAnimate;
+    private OnHelpAnimationFinishedListener listener;
     private int lastAnimatedView;
-    List<CandleView> candlesToAnimate;
-    OnHelpAnimationFinishedListener listener;
+    private boolean isLinesVisible;
+    private Paint linePaint = new Paint();
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     public void setPuzzle(CandlePuzzle puzzle, CandleView.OnCandleViewClickListener listener) {
-        List<CandleModel> candles = puzzle.getCandles();
-
+        final List<CandleModel> candles = puzzle.getCandles();
         candleViews = new ArrayList<>(candles.size());
-
         removeAllViews();
+        this.isLinesVisible = false;
+
+        linePaint.setColor(Color.DKGRAY);
+        linePaint.setStrokeWidth(LINE_WIDTH);
+        linePaint.setAntiAlias(true);
+        linePaint.setAlpha(DEFAULT_LINE_ALPHA);
+        linePaint.setStyle(Paint.Style.STROKE);
+        linePaint.setStrokeJoin(Paint.Join.ROUND);
+
+        this.setWillNotDraw(false);
 
         for (int i = 0; i < ROWS; ++i) {
             TableRow row = new TableRow(getContext());
@@ -78,7 +94,7 @@ public class GameView extends TableLayout implements CandleView.OnAnimationFinis
                 return candleView;
             }
         }
-        return null;
+        throw new IllegalStateException("Internal id mismatch");
     }
 
     @Override
@@ -92,13 +108,41 @@ public class GameView extends TableLayout implements CandleView.OnAnimationFinis
         }
     }
 
-    public interface OnHelpAnimationFinishedListener {
-        void onHelpAnimationFinished();
-    }
-
     public void setEnabledCandles(boolean isEnabled) {
         for (CandleView candle : candleViews) {
             candle.setEnabled(isEnabled);
         }
+    }
+
+    public void setLinesVisible(boolean isLinesVisible) {
+        this.isLinesVisible = isLinesVisible;
+        invalidate();
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        if (isLinesVisible && !isEmpty()) {
+            final int h = getMeasuredHeight();
+            final int w = getMeasuredWidth();
+            for (CandleView candleView : candleViews) {
+                final float fromX = candleView.getModel().getX();
+                final float fromY = candleView.getModel().getY();
+                for (CandleModel candleModel : candleView.getModel().getNeighbourgs()) {
+                    final float toX = candleModel.getX();
+                    final float toY = candleModel.getY();
+                    canvas.drawLine(w * (fromX + 0.5f) / COLUMNS, h * (fromY + 0.5f) / ROWS, w * (toX + 0.5f) / COLUMNS, h * (toY + 0.5f) / ROWS, linePaint);
+                }
+            }
+        }
+    }
+
+    private boolean isEmpty() {
+        return candleViews == null || candleViews.isEmpty();
+    }
+
+    public interface OnHelpAnimationFinishedListener {
+        void onHelpAnimationFinished();
     }
 }

@@ -20,7 +20,9 @@ import edu.amd.spbstu.magiccave.R;
  * @since 23.02.2015
  */
 public class MainMenuFragment extends Fragment {
+
     public static final String TAG = "MainMenuFragment";
+    private static final String SOUND_SWITCH_KEY = "SOUND_SWITCH_KEY";
 
     private OnMainMenuOptionSelectedListener mListener;
     private int soundImageResource;
@@ -29,13 +31,25 @@ public class MainMenuFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static MainMenuFragment newInstance() {
-        return new MainMenuFragment();
+    public static MainMenuFragment newInstance(boolean isSoundOn) {
+        MainMenuFragment fragment = new MainMenuFragment();
+        Bundle args = new Bundle();
+        final int res = isSoundOn ? R.drawable.ic_action_volume_on : R.drawable.ic_action_volume_muted;
+        args.putInt(SOUND_SWITCH_KEY, res);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        soundImageResource = R.drawable.ic_action_volume_on;
+        if (savedInstanceState != null) {
+            soundImageResource = savedInstanceState.getInt(SOUND_SWITCH_KEY);
+        }
+        if (getArguments() != null) {
+            soundImageResource = getArguments().getInt(SOUND_SWITCH_KEY);
+        }
     }
 
     @Override
@@ -49,7 +63,7 @@ public class MainMenuFragment extends Fragment {
         final Typeface type = MainApplication.RESOURCE_LOADER.getTypeface();
 
         final ImageView soundSwitchBtn = (ImageView) rootView.findViewById(R.id.image_view);
-        soundImageResource = R.drawable.ic_action_volume_on;
+        soundSwitchBtn.setImageDrawable(getResources().getDrawable(soundImageResource));
 
         soundSwitchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +124,13 @@ public class MainMenuFragment extends Fragment {
         initCandleAnimation(rootView);
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(SOUND_SWITCH_KEY, soundImageResource);
     }
 
     private void initCandleAnimation(View rootView) {
