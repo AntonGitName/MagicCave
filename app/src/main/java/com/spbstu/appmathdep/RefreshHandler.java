@@ -26,4 +26,4 @@ public class RefreshHandler extends Handler
         this.removeMessages(0);
         sendMessageDelayed(obtainMessage(0), delayMillis);
     }
-};
+}

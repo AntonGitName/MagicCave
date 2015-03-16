@@ -8,7 +8,7 @@ public enum GameMode {
     RANDOM(0),
     SCENARIO(1);
 
-    private int value;
+    private final int value;
 
     GameMode(int value) {
         this.value = value;

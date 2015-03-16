@@ -76,15 +76,15 @@ public class CandleView extends AnimatedView {
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+    protected void onSizeChanged(int w, int h, int oldW, int oldH) {
+        super.onSizeChanged(w, h, oldW, oldH);
         viewH = h;
         viewW = w;
         isSizeSet = true;
         mCandleImage.loadImages(mResourceLoader, new Point(w, h));
     }
 
-    void drawCandleImage(Canvas canvas) {
+    private void drawCandleImage(Canvas canvas) {
         if (isSizeSet) {
             mCandleImage.setState(mModel.getState());
 

@@ -54,9 +54,9 @@ public class CandlePuzzle {
             final int x = jsonCandle.getInt(X_KEY);
             final int y = jsonCandle.getInt(Y_KEY);
             final int id = jsonCandle.getInt(ID_KEY);
-            final boolean isInversedCorrectly = jsonCandle.getBoolean(IS_CORRECT_KEY);
+            final boolean isInvertedCorrectly = jsonCandle.getBoolean(IS_CORRECT_KEY);
             final String state = jsonCandle.getString(STATE_KEY);
-            candles.add(new CandleModel(x, y, id, isInversedCorrectly, state));
+            candles.add(new CandleModel(x, y, id, isInvertedCorrectly, state));
         }
         for (int i = 0; i < n; ++i) {
             final JsonObject jsonCandle = jsonCandles.getJsonObject(i);
@@ -68,6 +68,12 @@ public class CandlePuzzle {
         }
     }
 
+    public CandlePuzzle(List<CandleModel> candles, int w, int h) {
+        this.candles = candles;
+        gridW = w;
+        gridH = h;
+    }
+
     private CandleModel getCandle(int id) {
         for (CandleModel model : candles) {
             if (id == model.getId()) {
@@ -77,24 +83,10 @@ public class CandlePuzzle {
         throw new IllegalStateException("Invalid id");
     }
 
-    public CandlePuzzle(List<CandleModel> candles, int w, int h) {
-        this.candles = candles;
-        gridW = w;
-        gridH = h;
-    }
-
-    public int getGridW() {
-        return gridW;
-    }
-
-    public int getGridH() {
-        return gridH;
-    }
-
     public List<Integer> getSolution() {
         List<Integer> solution = new ArrayList<>();
         for (CandleModel candle : candles) {
-            if (!candle.isInversedCorrectly()) {
+            if (!candle.isInvertedCorrectly()) {
                 solution.add(candle.getId());
             }
         }
@@ -120,7 +112,7 @@ public class CandlePuzzle {
         final JsonArrayBuilder candlesArrayBuilder = factory.createArrayBuilder();
         for (CandleModel model : candles) {
             final JsonArrayBuilder neighboursBuilder = factory.createArrayBuilder();
-            for (CandleModel neighbour : model.getNeighbourgs()) {
+            for (CandleModel neighbour : model.getNeighbours()) {
                 neighboursBuilder.add(neighbour.getId());
             }
             candlesArrayBuilder.add(factory.createObjectBuilder()
@@ -128,7 +120,7 @@ public class CandlePuzzle {
                     .add(Y_KEY, model.getY())
                     .add(ID_KEY, model.getId())
                     .add(STATE_KEY, model.getState().toString())
-                    .add(IS_CORRECT_KEY, model.isInversedCorrectly())
+                    .add(IS_CORRECT_KEY, model.isInvertedCorrectly())
                     .add(NEIGHBOURS_KEY, neighboursBuilder));
         }
         JsonObject value = factory.createObjectBuilder()

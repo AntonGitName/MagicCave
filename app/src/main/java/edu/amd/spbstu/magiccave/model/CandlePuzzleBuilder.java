@@ -65,7 +65,7 @@ public class CandlePuzzleBuilder {
         for (final CandleModel candle : candles) {
             final List<CandleModel> candidates = new ArrayList<>(candles);
             candidates.remove(candle);
-            candidates.removeAll(candle.getNeighbourgs());
+            candidates.removeAll(candle.getNeighbours());
 
             Collections.sort(candidates, new Comparator<CandleModel>() {
                 @Override

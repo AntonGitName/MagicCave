@@ -19,26 +19,22 @@ import edu.amd.spbstu.magiccave.R;
  */
 public class ResourceLoader {
 
-    public static final String TAG = "ResourceLoader";
+    private static final String TAG = "ResourceLoader";
     private static final String TYPEFACE_FILENAME = "fonts/Parchment MF.ttf";
-
-    private final Typeface typeface;
-    private final Bitmap[] fireBitmaps;
-    private final Bitmap candleBitmap;
-    private final Bitmap handBitmap;
-
-    private final float fireSizeRate;
-    private final float handSizeRate;
-    private final float candleSizeRate;
-
-    private final Map<Point, Bitmap[]> fireBitmapsScaled = new HashMap<>();
-    private final Map<Point, Bitmap> candleBitmapScaled = new HashMap<>();
-    private final Map<Point, Bitmap> handBitmapScaled = new HashMap<>();
-
     private static final int[] fireBitmapsIDs = {R.drawable.fire1, R.drawable.fire2, R.drawable.fire3,
             R.drawable.fire4, R.drawable.fire5, R.drawable.fire6, R.drawable.fire7, R.drawable.fire8, R.drawable.fire9,
             R.drawable.fire10, R.drawable.fire11, R.drawable.fire12, R.drawable.fire13, R.drawable.fire14,
             R.drawable.fire15};
+    private final Typeface typeface;
+    private final Bitmap[] fireBitmaps;
+    private final Bitmap candleBitmap;
+    private final Bitmap handBitmap;
+    private final float fireSizeRate;
+    private final float handSizeRate;
+    private final float candleSizeRate;
+    private final Map<Point, Bitmap[]> fireBitmapsScaled = new HashMap<>();
+    private final Map<Point, Bitmap> candleBitmapScaled = new HashMap<>();
+    private final Map<Point, Bitmap> handBitmapScaled = new HashMap<>();
 
     public ResourceLoader(Resources resources, AssetManager assetManager) {
 

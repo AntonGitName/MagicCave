@@ -9,19 +9,18 @@ import java.util.List;
  */
 public class CandleModel {
 
-    private State mState = State.ON;
-    private List<CandleModel> mNeighbourgs = new ArrayList<>();
-    private boolean mIsInversedCorrectly = true;
+    private static int lastId = 0;
+    private final List<CandleModel> neighbours = new ArrayList<>();
     private final int mId;
     private final int x;
     private final int y;
+    private State mState = State.ON;
+    private boolean isInvertedCorrectly = true;
 
-    private static int lastId = 0;
-
-    public CandleModel(int x, int y, int id, boolean isInversedCorrectly, String state) {
+    public CandleModel(int x, int y, int id, boolean isInvertedCorrectly, String state) {
         this.mId = id;
         this.mState = State.valueOf(state);
-        this.mIsInversedCorrectly = isInversedCorrectly;
+        this.isInvertedCorrectly = isInvertedCorrectly;
         this.x = x;
         this.y = y;
     }
@@ -44,30 +43,30 @@ public class CandleModel {
         return mState;
     }
 
-    public List<CandleModel> getNeighbourgs() {
-        return mNeighbourgs;
+    public List<CandleModel> getNeighbours() {
+        return neighbours;
     }
 
     public int getId() {
         return mId;
     }
 
-    public boolean isInversedCorrectly() {
-        return mIsInversedCorrectly;
+    public boolean isInvertedCorrectly() {
+        return isInvertedCorrectly;
     }
 
-    public void inverse() {
+    private void inverse() {
         mState = mState.inverseState();
     }
 
     public void addNeighbour(CandleModel candle) {
-        mNeighbourgs.add(candle);
+        neighbours.add(candle);
     }
 
     public void inverseWithNeighbours() {
-        mIsInversedCorrectly = !mIsInversedCorrectly;
+        isInvertedCorrectly = !isInvertedCorrectly;
         inverse();
-        for (CandleModel neighbour : mNeighbourgs) {
+        for (CandleModel neighbour : neighbours) {
             neighbour.inverse();
         }
     }

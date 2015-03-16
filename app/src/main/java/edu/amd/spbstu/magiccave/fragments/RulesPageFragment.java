@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.List;
-
 import edu.amd.spbstu.magiccave.MainApplication;
 import edu.amd.spbstu.magiccave.R;
 
@@ -31,19 +29,12 @@ public class RulesPageFragment extends Fragment {
 
     private static final int PAGES_COUNT = 3;
 
-    private List<View> pages;
-
-    public static RulesPageFragment newInstance() {
-        return new RulesPageFragment();
-    }
-
     public RulesPageFragment() {
         // Required empty public constructor
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public static RulesPageFragment newInstance() {
+        return new RulesPageFragment();
     }
 
     @Override

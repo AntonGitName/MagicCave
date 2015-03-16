@@ -26,13 +26,12 @@ public class GameView extends TableLayout implements CandleView.OnAnimationFinis
 
     private static final int DEFAULT_LINE_ALPHA = 100;
     private static final float LINE_WIDTH = 4f;
-
+    private final Paint linePaint = new Paint();
     private List<CandleView> candleViews;
     private List<CandleView> candlesToAnimate;
     private OnHelpAnimationFinishedListener listener;
     private int lastAnimatedView;
     private boolean isLinesVisible;
-    private Paint linePaint = new Paint();
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -42,7 +41,7 @@ public class GameView extends TableLayout implements CandleView.OnAnimationFinis
         final List<CandleModel> candles = puzzle.getCandles();
         candleViews = new ArrayList<>(candles.size());
         removeAllViews();
-        this.isLinesVisible = false;
+        setLinesVisible(false);
 
         linePaint.setColor(Color.DKGRAY);
         linePaint.setStrokeWidth(LINE_WIDTH);
@@ -129,7 +128,7 @@ public class GameView extends TableLayout implements CandleView.OnAnimationFinis
             for (CandleView candleView : candleViews) {
                 final float fromX = candleView.getModel().getX();
                 final float fromY = candleView.getModel().getY();
-                for (CandleModel candleModel : candleView.getModel().getNeighbourgs()) {
+                for (CandleModel candleModel : candleView.getModel().getNeighbours()) {
                     final float toX = candleModel.getX();
                     final float toY = candleModel.getY();
                     canvas.drawLine(w * (fromX + 0.5f) / COLUMNS, h * (fromY + 0.5f) / ROWS, w * (toX + 0.5f) / COLUMNS, h * (toY + 0.5f) / ROWS, linePaint);

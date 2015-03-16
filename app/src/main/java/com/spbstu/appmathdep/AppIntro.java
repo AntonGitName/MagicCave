@@ -1,15 +1,25 @@
 package com.spbstu.appmathdep;
 
 import android.app.Activity;
-import android.content.res.*;
-import android.content.Intent;
 import android.content.Context;
-import android.graphics.*;
+import android.content.Intent;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
-import android.util.*;
-import android.net.*;
-import java.io.*;
+import android.graphics.Path;
+import android.graphics.RadialGradient;
+import android.graphics.Rect;
+import android.graphics.Shader;
+import android.net.ConnectivityManager;
+import android.net.Uri;
+import android.util.Log;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import edu.amd.spbstu.magiccave.R;
 
@@ -88,12 +98,6 @@ public class AppIntro
 	float				m_appleRadiusMin;
 	V2d					m_point;
 
-    private class V2d
-    {
-        // Data
-        public	int	 x, y;
-    };
-
 	// METHODS
 	public AppIntro(Activity ctx, int language, boolean isModeStart)
 	{
@@ -103,13 +107,13 @@ public class AppIntro
 		m_language 			= language;
 		m_prevTime			= -1;
 		m_oriChanged		= 0;
-		
+
 		m_appState 			= APP_STATE_START;
-		
+
 		m_pathAppleOutline	= new Path();
 		m_pathAppleGraft	= new Path();
 		m_pathAppleLeaf		= new Path();
-		
+
 		m_point				= new V2d();
 		m_renderCounter 	= 0;
 		m_paintGreenEmpty	= new Paint();
@@ -117,7 +121,7 @@ public class AppIntro
 		m_paintGreenEmpty.setColor(0xFF207020);
 		m_paintGreenEmpty.setAntiAlias(true);
 		m_paintGreenEmpty.setStrokeWidth(3.0f);
-		
+
 		m_paintGreenFill 	= new Paint();
 		m_paintGreenFill.setStyle(Style.FILL_AND_STROKE);
 		m_paintGreenFill.setColor(0xFF207020);
@@ -136,19 +140,19 @@ public class AppIntro
 		m_paintGraftFill.setStyle(Style.FILL);
 		m_paintGraftFill.setColor(0xFF905000);
 		m_paintGraftFill.setAntiAlias(true);
-		
+
 		m_paintLeafFill = new Paint();
 		m_paintLeafFill.setStyle(Style.FILL);
 		m_paintLeafFill.setColor(0xFF3aa142);
 		m_paintLeafFill.setAntiAlias(true);
-		
+
 		m_paintTextWhite = new Paint();
 		m_paintTextWhite.setColor(0xFFFFFFFF);
 		m_paintTextWhite.setAntiAlias(true);
 		m_paintTextWhite.setStyle(Style.FILL);
 		m_paintTextWhite.setTextSize(24.0f);
 		m_paintTextWhite.setTextAlign(Align.CENTER);
-		
+
 		m_paintBitmap = new Paint();
 		m_paintBitmap.setColor(0xFFFFFFFF);
 		m_paintBitmap.setStyle(Style.FILL);
@@ -163,14 +167,15 @@ public class AppIntro
 		m_strDepth 		= ctx.getString(R.string.str_depth);
 		m_strUniversity	= ctx.getString(R.string.str_university);
 		m_strWeb		= ctx.getString(R.string.str_toweb);
-		
+
 		m_bitmapButtonWeb = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.button_web);
 	}
-	
+
 	public int		getLanguage()
 	{
 		return m_language;
 	}
+
 	public Bitmap	loadBitmap(String fileName)
 	{
 		Bitmap bmp = null;
@@ -185,13 +190,13 @@ public class AppIntro
 		}
 		return bmp;
 	}
+
 	public void onOrientation(int ori)
 	{
 		Log.d("AMDEPTH", "New orientation");
 		m_oriChanged = 1;
 	}
-	
-	
+
 	public void onDraw(Canvas canvas)
 	{
 		m_curTime 		= System.currentTimeMillis();
@@ -201,13 +206,13 @@ public class AppIntro
 		m_prevTime = m_curTime;
 		if (deltaTimeMs > 200)
 			deltaTimeMs = 200;
-		
+
 		if (m_oriChanged == 1)
 		{
 			m_oriChanged = 0;
 			acceptNewScreen(canvas);
 		}
-		
+
 		m_renderCounter++;
 		if (m_appState == APP_STATE_START)
 		{
@@ -242,7 +247,6 @@ public class AppIntro
 		if (m_appState == APP_STATE_LEAF)
 		{
 			drawAppleLeaf(canvas, deltaTimeMs);
-			return;
 		}
 	}
 
@@ -255,41 +259,36 @@ public class AppIntro
     {
         ConnectivityManager cm = (ConnectivityManager)m_ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
         // test for connection
-        if (cm.getActiveNetworkInfo() != null
-                && cm.getActiveNetworkInfo().isAvailable()
-                && cm.getActiveNetworkInfo().isConnected()) 
-        {
-            return true;
-        } else 
-        {
-            return false;
-        }
-    }
-	
-	
-	// *****************************************************
-	// Individual state draws
-	// *****************************************************
-	
+		return cm.getActiveNetworkInfo() != null
+				&& cm.getActiveNetworkInfo().isAvailable()
+				&& cm.getActiveNetworkInfo().isConnected();
+	}
+
 	// t in [0..1]
 	private void getCardioid(float t, float cx, float cy, float radiusBase, float radiusApple, V2d pointOut)
 	{
 		float phi;
-		
+
 		phi = 3.1415925636f * 2.0f * t;
 		pointOut.x = (int)( cx + radiusBase * Math.sin(phi) + radiusApple * ( Math.sin(phi) - Math.sin(2.0f * phi) ) );
 		pointOut.y = (int)( cy - radiusBase * Math.cos(phi) - radiusApple * ( Math.cos(phi) - Math.cos(2.0f * phi) ) );
 	}
-	private void acceptNewScreen(Canvas canvas) 
+
+
+	// *****************************************************
+	// Individual state draws
+	// *****************************************************
+
+	private void acceptNewScreen(Canvas canvas)
 	{
 		m_scrW = canvas.getWidth();
 		m_scrH = canvas.getHeight();
-		m_scrCenterX = m_scrW >> 1; 
-		m_scrCenterY = m_scrH >> 1; 
+		m_scrCenterX = m_scrW >> 1;
+		m_scrCenterY = m_scrH >> 1;
 		int dimMin = (m_scrW < m_scrH)? m_scrW: m_scrH;
-		m_appleRadiusBase = (float)dimMin * 0.12f; 
+		m_appleRadiusBase = (float) dimMin * 0.12f;
 	}
-	
+
 	private void initDrawCircle(Canvas canvas)
 	{
 		acceptNewScreen(canvas);
@@ -301,12 +300,12 @@ public class AppIntro
 		int	r, g, b;
 		r = g = b = 0;
 		canvas.drawRGB(r, g, b);
-		
+
 		float 	rAnim = (float)m_timeState / TIME_CIRCLE_INC;
 		if (rAnim > 1.0f) rAnim = 1.0f;
 		float	radiusBase = 5.0f * (1.0f - rAnim) + m_appleRadiusBase * rAnim;
 		float   radiusApple  = 0.0f;
-		
+
 		m_pathAppleOutline.reset();
 		float t = 0.0f, tStep = 1.0f / NUM_SEG_APPLE;
 		for (int a = 0; a < NUM_SEG_APPLE; a ++)
@@ -321,7 +320,7 @@ public class AppIntro
 		m_pathAppleOutline.close();
 		// draw path
 		canvas.drawPath(m_pathAppleOutline, m_paintGreenEmpty);
-		
+
 		// update state
 		m_timeState += deltaTimeMs;
 		if (m_timeState > TIME_CIRCLE_INC)
@@ -330,6 +329,7 @@ public class AppIntro
 			m_appState = m_appState + 1;
 		}
 	}
+
 	private void drawAppleEmptyInc(Canvas canvas, int deltaTimeMs)
 	{
 		canvas.drawRGB(0, 0, 0);
@@ -339,7 +339,7 @@ public class AppIntro
 		if (rAnim > 1.0f) rAnim = 1.0f;
 		float	radiusBase = m_appleRadiusBase;
 		float   radiusApple = 0.0f * (1.0f - rAnim) + radiusBase * rAnim;
-		
+
 		m_pathAppleOutline.reset();
 		float t = 0.0f, tStep = 1.0f / NUM_SEG_APPLE;
 		for (int a = 0; a < NUM_SEG_APPLE; a ++)
@@ -354,7 +354,7 @@ public class AppIntro
 		m_pathAppleOutline.close();
 		// draw path
 		canvas.drawPath(m_pathAppleOutline, m_paintGreenEmpty);
-		
+
 		// update state
 		m_timeState += deltaTimeMs;
 		if (m_timeState > TIME_APPLE_INC)
@@ -363,7 +363,7 @@ public class AppIntro
 			m_appState = m_appState + 1;
 		}
 	}		// func
-	
+
 	private void drawAppleFillOpacity(Canvas canvas, int deltaTimeMs)
 	{
 		canvas.drawRGB(0, 0, 0);
@@ -372,15 +372,14 @@ public class AppIntro
 		float 	rAnim = (float)m_timeState / TIME_APPLE_INC;
 		if (rAnim > 1.0f) rAnim = 1.0f;
 		float	radiusBase 	= m_appleRadiusBase;
-		float   radiusApple = radiusBase;
 		int		opa = (int)(rAnim * 255.0f);
-		
-		
+
+
 		m_pathAppleOutline.reset();
 		float t = 0.0f, tStep = 1.0f / NUM_SEG_APPLE;
 		for (int a = 0; a < NUM_SEG_APPLE; a ++)
 		{
-			getCardioid(t, m_scrCenterX, m_scrCenterY, radiusBase, radiusApple, m_point);
+			getCardioid(t, m_scrCenterX, m_scrCenterY, radiusBase, radiusBase, m_point);
 			t += tStep;
 			if (a == 0)
 				m_pathAppleOutline.moveTo(m_point.x, m_point.y);
@@ -389,11 +388,11 @@ public class AppIntro
 		}
 		m_pathAppleOutline.close();
 		m_paintGreenFill.setAlpha(opa);
-		
+
 		// draw path
 		canvas.drawPath(m_pathAppleOutline, m_paintGreenFill);
 		canvas.drawPath(m_pathAppleOutline, m_paintGreenEmpty);
-		
+
 		// update state
 		m_timeState += deltaTimeMs;
 		if (m_timeState > TIME_APPLE_INC)
@@ -402,6 +401,7 @@ public class AppIntro
 			m_appState = m_appState + 1;
 		}
 	}		// func
+
 	private void drawAppleFillShader(Canvas canvas, int deltaTimeMs)
 	{
 		canvas.drawRGB(0, 0, 0);
@@ -410,15 +410,14 @@ public class AppIntro
 		float 	rAnim = (float)m_timeState / TIME_SHADER_COLORED;
 		if (rAnim > 1.0f) rAnim = 1.0f;
 		float	radiusBase 		= m_appleRadiusBase;
-		float   radiusApple 	= radiusBase;
 		int		opa 			= 255;
-		
-		
+
+
 		m_pathAppleOutline.reset();
 		float t = 0.0f, tStep = 1.0f / NUM_SEG_APPLE;
 		for (int a = 0; a < NUM_SEG_APPLE; a ++)
 		{
-			getCardioid(t, m_scrCenterX, m_scrCenterY, radiusBase, radiusApple, m_point);
+			getCardioid(t, m_scrCenterX, m_scrCenterY, radiusBase, radiusBase, m_point);
 			t += tStep;
 			if (a == 0)
 				m_pathAppleOutline.moveTo(m_point.x, m_point.y);
@@ -427,26 +426,26 @@ public class AppIntro
 		}
 		m_pathAppleOutline.close();
 		m_paintGreenFill.setAlpha(opa);
-		
+
 		int colors[] = new int[2];
 		float	xSpot, ySpot, radGrad;
-		
-		int r = (int)(0x20 * (1.0f - rAnim) + 0xAA * rAnim); 
-		int g = (int)(0x70 * (1.0f - rAnim) + 0xFF * rAnim); 
-		int b = (int)(0x20 * (1.0f - rAnim) + 0xAA * rAnim); 
-		
+
+		int r = (int) (0x20 * (1.0f - rAnim) + 0xAA * rAnim);
+		int g = (int) (0x70 * (1.0f - rAnim) + 0xFF * rAnim);
+		int b = (int) (0x20 * (1.0f - rAnim) + 0xAA * rAnim);
+
 		colors[0] = 0xFF000000 | (r<<16) | (g<<8) | b;
 		colors[1] = 0xFF207020;
-		
+
 		xSpot = m_scrCenterX + m_appleRadiusBase * 0.5f;
 		ySpot = m_scrCenterY + m_appleRadiusBase * 0.8f;
 		radGrad = m_appleRadiusBase * 2.5f;
 		RadialGradient gradientRadial = new RadialGradient(xSpot, ySpot, radGrad, colors, null, Shader.TileMode.CLAMP);
 		m_paintGreenFill.setShader(gradientRadial);
-		
+
 		// draw path
 		canvas.drawPath(m_pathAppleOutline, m_paintGreenFill);
-		
+
 		// update state
 		m_timeState += deltaTimeMs;
 		if (m_timeState > TIME_SHADER_COLORED)
@@ -455,6 +454,7 @@ public class AppIntro
 			m_appState 	= m_appState + 1;
 		}
 	}		// func
+
 	private void drawAppleGraft(Canvas canvas, int deltaTimeMs)
 	{
 		canvas.drawRGB(0, 0, 0);
@@ -463,15 +463,14 @@ public class AppIntro
 		float 	rAnim = (float)m_timeState / TIME_SHADER_COLORED;
 		if (rAnim > 1.0f) rAnim = 1.0f;
 		float	radiusBase 		= m_appleRadiusBase;
-		float   radiusApple 	= radiusBase;
 		int		opa 			= 255;
-		
-		
+
+
 		m_pathAppleOutline.reset();
 		float t = 0.0f, tStep = 1.0f / NUM_SEG_APPLE;
 		for (int a = 0; a < NUM_SEG_APPLE; a ++)
 		{
-			getCardioid(t, m_scrCenterX, m_scrCenterY, radiusBase, radiusApple, m_point);
+			getCardioid(t, m_scrCenterX, m_scrCenterY, radiusBase, radiusBase, m_point);
 			t += tStep;
 			if (a == 0)
 				m_pathAppleOutline.moveTo(m_point.x, m_point.y);
@@ -480,23 +479,23 @@ public class AppIntro
 		}
 		m_pathAppleOutline.close();
 		m_paintGreenFill.setAlpha(opa);
-		
+
 		// Path for graft
 		float	xLo, yLo, xHi, yHi, xMi, yMi;
 		float	X_RATIO = 0.2f;
 		float	Y_RATIO = 0.5f;
-		
+
 		xLo = m_scrCenterX;
 		yLo = m_scrCenterY - m_appleRadiusBase;
 		xHi = xLo + m_appleRadiusBase * 0.8f * rAnim;
 		yHi = yLo - m_appleRadiusBase * 1.6f * rAnim;
 		xMi = xLo * (1.0f - X_RATIO) + xHi * X_RATIO;
 		yMi = yLo * (1.0f - Y_RATIO) + yHi * Y_RATIO;
-		
+
 		m_pathAppleGraft.reset();
 		m_pathAppleGraft.moveTo(xLo,  yLo);
 		m_pathAppleGraft.quadTo(xMi,  yMi, xHi, yHi);
-		
+
 		xHi = xLo + m_appleRadiusBase * 1.0f * rAnim;
 		yHi = yLo - m_appleRadiusBase * 1.4f * rAnim;
 		xMi = xLo * (1.0f - X_RATIO) + xHi * X_RATIO;
@@ -504,25 +503,24 @@ public class AppIntro
 		m_pathAppleGraft.lineTo(xHi,  yHi);
 		m_pathAppleGraft.quadTo(xMi, yMi, xLo, yLo);
 		m_pathAppleGraft.close();
-		
-		
-		
+
+
 		int colors[] = new int[2];
 		float	xSpot, ySpot, radGrad;
-		
+
 		colors[0] = 0xFFAAFFAA;
 		colors[1] = 0xFF207020;
-		
+
 		xSpot 	= m_scrCenterX + m_appleRadiusBase * 0.5f;
 		ySpot 	= m_scrCenterY + m_appleRadiusBase * 0.8f;
 		radGrad	= m_appleRadiusBase * 2.5f;
 		RadialGradient gradientRadial = new RadialGradient(xSpot, ySpot, radGrad, colors, null, Shader.TileMode.CLAMP);
 		m_paintGreenFill.setShader(gradientRadial);
-		
+
 		// draw path
 		canvas.drawPath(m_pathAppleOutline, m_paintGreenFill);
 		canvas.drawPath(m_pathAppleGraft,  m_paintGraftFill);
-		
+
 		// update state
 		m_timeState += deltaTimeMs;
 		if (m_timeState > TIME_SHADER_COLORED)
@@ -531,7 +529,7 @@ public class AppIntro
 			m_appState 	= m_appState + 1;
 		}
 	}		// func
-	
+
 	private void drawAppleLeaf(Canvas canvas, int deltaTimeMs)
 	{
 		canvas.drawRGB(0, 0, 0);
@@ -546,7 +544,7 @@ public class AppIntro
 		}
 		else
 		{
-			tAnim = 255; 
+			tAnim = 255;
 		}
 		int tText;
 		if (animPhase == 0)
@@ -560,17 +558,16 @@ public class AppIntro
 		m_paintLeafFill.setAlpha(tAnim);
 		m_paintTextWhite.setAlpha(tText);
 		m_paintTextYell.setAlpha(tText);
-		
+
 		float	radiusBase 		= m_appleRadiusBase;
-		float   radiusApple 	= radiusBase;
 		int		opa 			= 255;
-		
-		
+
+
 		m_pathAppleOutline.reset();
 		float t = 0.0f, tStep = 1.0f / NUM_SEG_APPLE;
 		for (int a = 0; a < NUM_SEG_APPLE; a ++)
 		{
-			getCardioid(t, m_scrCenterX, m_scrCenterY, radiusBase, radiusApple, m_point);
+			getCardioid(t, m_scrCenterX, m_scrCenterY, radiusBase, radiusBase, m_point);
 			t += tStep;
 			if (a == 0)
 				m_pathAppleOutline.moveTo(m_point.x, m_point.y);
@@ -579,23 +576,23 @@ public class AppIntro
 		}
 		m_pathAppleOutline.close();
 		m_paintGreenFill.setAlpha(opa);
-		
+
 		// Path for graft
 		float	xLo, yLo, xHi, yHi, xMi, yMi;
 		float	X_RATIO = 0.2f;
 		float	Y_RATIO = 0.5f;
-		
+
 		xLo = m_scrCenterX;
 		yLo = m_scrCenterY - m_appleRadiusBase;
 		xHi = xLo + m_appleRadiusBase * 0.8f;
 		yHi = yLo - m_appleRadiusBase * 1.6f;
 		xMi = xLo * (1.0f - X_RATIO) + xHi * X_RATIO;
 		yMi = yLo * (1.0f - Y_RATIO) + yHi * Y_RATIO;
-		
+
 		m_pathAppleGraft.reset();
 		m_pathAppleGraft.moveTo(xLo,  yLo);
 		m_pathAppleGraft.quadTo(xMi,  yMi, xHi, yHi);
-		
+
 		xHi = xLo + m_appleRadiusBase * 1.0f;
 		yHi = yLo - m_appleRadiusBase * 1.4f;
 		xMi = xLo * (1.0f - X_RATIO) + xHi * X_RATIO;
@@ -603,33 +600,32 @@ public class AppIntro
 		m_pathAppleGraft.lineTo(xHi,  yHi);
 		m_pathAppleGraft.quadTo(xMi, yMi, xLo, yLo);
 		m_pathAppleGraft.close();
-		
-		
+
+
 		// internal green filler as radial gradient
 		int colors[] = new int[2];
 		float	xSpot, ySpot, radGrad;
-		
+
 		colors[0] = 0xFFAAFFAA;
 		colors[1] = 0xFF207020;
-		
+
 		xSpot 	= m_scrCenterX + m_appleRadiusBase * 0.5f;
 		ySpot 	= m_scrCenterY + m_appleRadiusBase * 0.8f;
 		radGrad	= m_appleRadiusBase * 2.5f;
 		RadialGradient gradientRadial = new RadialGradient(xSpot, ySpot, radGrad, colors, null, Shader.TileMode.CLAMP);
 		m_paintGreenFill.setShader(gradientRadial);
-		
-		
-		
+
+
 		// path for leaf
 		float	xL, yL, xR, yR, xU0, yU0, xU1, yU1, xD0, yD0, xD1, yD1;
-		
-		float LeafLen = m_appleRadiusBase * 1.35f; 
+
+		float LeafLen = m_appleRadiusBase * 1.35f;
 		xR = yR = 0;
 		xL = - LeafLen;
 		yL = 0;
-		float radR = LeafLen * 0.45f; 
-		float radL = LeafLen * 0.4f; 
- 		
+		float radR = LeafLen * 0.45f;
+		float radL = LeafLen * 0.4f;
+
 		float xLeafSource = m_scrCenterX + m_appleRadiusBase * 0.32f;
 		float yLeafSource = m_scrCenterY - m_appleRadiusBase - m_appleRadiusBase * 0.90f;
 		xU0 = -(float)Math.cos(80 * 3.1415f / 180.0f) * radR;
@@ -640,12 +636,12 @@ public class AppIntro
 		yU1 = yL - (float)Math.sin(40 * 3.1415f / 180.0f) * radL;
 		xD1 = xL + (float)Math.cos(15 * 3.1415f / 180.0f) * radL;
 		yD1 = yL + (float)Math.sin(15 * 3.1415f / 180.0f) * radL;
-		
+
 		// Rotate leaf
 		float	aCos = (float)Math.cos(-20.0f * 3.1415f / 180.0f);
 		float	aSin = (float)Math.sin(-20.0f * 3.1415f / 180.0f);
 		float	xx, yy;
-		
+
 		xx = xL * aCos + yL * aSin;
 		yy =-xL * aSin + yL * aCos;
 		xL = xx; yL = yy;
@@ -664,8 +660,8 @@ public class AppIntro
 		xx = xD1 * aCos + yD1 * aSin;
 		yy =-xD1 * aSin + yD1 * aCos;
 		xD1 = xx; yD1 = yy;
-		
-		
+
+
 		// Translate leaf
 		xL  += xLeafSource; yL  += yLeafSource;
 		xR  += xLeafSource; yR  += yLeafSource;
@@ -673,23 +669,20 @@ public class AppIntro
 		xD0 += xLeafSource; yD0 += yLeafSource;
 		xU1 += xLeafSource; yU1 += yLeafSource;
 		xD1 += xLeafSource; yD1 += yLeafSource;
-		
-		
-		
-		
+
+
 		m_pathAppleLeaf.reset();
 		m_pathAppleLeaf.moveTo(xR,  yR);
 		m_pathAppleLeaf.cubicTo(xU0,  yU0, xU1, yU1, xL, yL);
 		m_pathAppleLeaf.cubicTo(xD1, yD1, xD0, yD0, xR, yR);
 		m_pathAppleLeaf.close();
-		
-		
-		
+
+
 		// draw path
 		canvas.drawPath(m_pathAppleOutline, m_paintGreenFill);
 		canvas.drawPath(m_pathAppleGraft,  m_paintGraftFill);
 		canvas.drawPath(m_pathAppleLeaf,   m_paintLeafFill);
-		
+
 		if (m_timeState > TIME_LEAF)
 		{
 			// draw titles
@@ -735,7 +728,7 @@ public class AppIntro
                 canvas.drawText(m_strWeb, 0, m_strWeb.length(), rDst.centerX(), rDst.centerY() + (h >> 1), m_paintTextWhite);
             }
 		}
-		
+
 		// update state
 		m_timeState += deltaTimeMs;
 	}		// func
@@ -757,13 +750,18 @@ public class AppIntro
 		{
 			if (isConnectedToInternet() )
 			{
-				// go to web 
+				// go to web
 				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://amd.stu.neva.ru/"));
 				m_ctx.startActivity(browserIntent);
 			}
 		}
 		return false;
 	}	// onTouch
+
+	private class V2d {
+		// Data
+		public int x, y;
+	}
 
 	
 }

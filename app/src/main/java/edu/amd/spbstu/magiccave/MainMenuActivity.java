@@ -25,7 +25,7 @@ public class MainMenuActivity extends FragmentActivity implements MainMenuFragme
         , MenuDialogFragment.OnGameMenuButtonsClickListener
         , WinDialogFragment.OnWinMenuButtonsClickListener {
 
-    public static final String TAG = "MainMenuActivity";
+    private static final String TAG = "MainMenuActivity";
     private static final String SOUND_SWITCH_KEY = "SOUND_SWITCH_KEY";
 
     private MediaPlayer mediaPlayer;
