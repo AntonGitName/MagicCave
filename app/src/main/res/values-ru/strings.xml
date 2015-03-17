@@ -1,11 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Кафедра Прикладной Математики</string>
-    <string name="dummy_button">To Site</string>
-    <string name="dummy_content">Print text here</string>
     <string name="str_depth">Кафедра Прикладной Математики</string>
     <string name="str_university">Санкт-Петербургский Государственный Политехнический Университет</string>
     <string name="str_toweb">На сайт</string>
+    <string name="about_app_name">Кафедра Прикладной Математики </string>
+    <string name="app_name">Волшебная пещера</string>
+    <string name="about_btn">Помощь</string>
+    <string name="task_label">Задача</string>
+    <string name="game_main_menu_btn">Главное меню</string>
+    <string name="game_menu_btn">Меню</string>
+    <string name="game_menu_label">Меню</string>
+    <string name="game_restart_btn">Заново</string>
+    <string name="game_resume_btn">Продолжить</string>
+    <string name="modes_label">Режимы игры</string>
+    <string name="quit_btn">Выход</string>
+    <string name="random_level_btn">Случайный уровень</string>
+    <string name="rules_btn">Правила</string>
+    <string name="game_win_label">Поздравляем!</string>
+    <string name="game_next_btn">Следующий</string>
+    <string name="choose_level_btn">Выбор уровня</string>
+    <string name="control_label">Управление</string>
+    <string name="title_activity_main_menu">Волшебная пещера</string>
+    <string name="game_win_text" formatted="false">Уровень пройден за %d ходов. Минимальное количество ходов %d.</string>
+    <string name="modes_text">В игре есть два разных режима: режим пещеры и случайный режим. В первом режиме вам придётся решить задачки из девяти разных пещер, чтобы получить магические звезды!=) Во втором режиме вам предстоит разгадать случайно сгенерированные задачки. Будьте готовы к тому, что некоторые задачки могут оказаться не такими простыми как кажутся!</string>
+    <string name="control_text">Для того, чтобы зажечь или потущить свечку достаточно просто нажать на неё. Если у вас не получается решить задачку, то вы всегда можете нажать кнопку *Магия*, и тогда наш супер-пупер алгоритм покажет Вам несколько ходов, которые позволят вам продвинуться. Так же доступна кнопка вызова меню, из которого можно попасть в главное меню или начать уровень заново.</string>
+    <string name="game_help_text">Магия</string>
+    <string name="task_text">Задача каждого из уровней крайне проста. Вам нужно зажечь все свечки! Вы можете изменить состояние любой свечки, но все свечки связаны некоторым образом так, что изменение состояние одной повлечет за собой изменение состояния некоторых её соседей. Будьте внимательны и любая задача покажется вам простой!</string>
 
 </resources>
