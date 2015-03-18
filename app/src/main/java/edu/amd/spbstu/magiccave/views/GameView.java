@@ -21,12 +21,11 @@ import edu.amd.spbstu.magiccave.model.CandlePuzzle;
  */
 public class GameView extends TableLayout implements CandleView.OnAnimationFinishedListener {
 
-    public static final int ROWS = 3;
-    public static final int COLUMNS = 4;
-
     private static final int DEFAULT_LINE_ALPHA = 100;
     private static final float LINE_WIDTH = 4f;
     private final Paint linePaint = new Paint();
+    public int rows = 3;
+    public int columns = 4;
     private List<CandleView> candleViews;
     private List<CandleView> candlesToAnimate;
     private OnHelpAnimationFinishedListener listener;
@@ -52,10 +51,15 @@ public class GameView extends TableLayout implements CandleView.OnAnimationFinis
 
         this.setWillNotDraw(false);
 
-        for (int i = 0; i < ROWS; ++i) {
+        final TableLayout.LayoutParams layoutParams = new TableLayout.LayoutParams(LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT, 1.0f);
+
+        rows = puzzle.getRows();
+        columns = puzzle.getColumns();
+
+        for (int i = 0; i < rows; ++i) {
             TableRow row = new TableRow(getContext());
-            row.setLayoutParams(new TableLayout.LayoutParams(LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT, 1.0f));
-            for (int j = 0; j < COLUMNS; ++j) {
+            row.setLayoutParams(layoutParams);
+            for (int j = 0; j < columns; ++j) {
 
                 CandleModel haveCandleHere = null;
                 for (CandleModel candle : candles) {
@@ -131,7 +135,7 @@ public class GameView extends TableLayout implements CandleView.OnAnimationFinis
                 for (CandleModel candleModel : candleView.getModel().getNeighbours()) {
                     final float toX = candleModel.getX();
                     final float toY = candleModel.getY();
-                    canvas.drawLine(w * (fromX + 0.5f) / COLUMNS, h * (fromY + 0.5f) / ROWS, w * (toX + 0.5f) / COLUMNS, h * (toY + 0.5f) / ROWS, linePaint);
+                    canvas.drawLine(w * (fromX + 0.5f) / columns, h * (fromY + 0.5f) / rows, w * (toX + 0.5f) / columns, h * (toY + 0.5f) / rows, linePaint);
                 }
             }
         }

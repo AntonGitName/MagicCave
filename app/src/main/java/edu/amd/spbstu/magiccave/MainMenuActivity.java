@@ -10,6 +10,8 @@ import android.util.Log;
 import com.spbstu.appmathdep.AboutActivity;
 
 import edu.amd.spbstu.magiccave.fragments.GameFragment;
+import edu.amd.spbstu.magiccave.fragments.LevelButtonFragment;
+import edu.amd.spbstu.magiccave.fragments.LevelChooseFragment;
 import edu.amd.spbstu.magiccave.fragments.MainMenuFragment;
 import edu.amd.spbstu.magiccave.fragments.MenuDialogFragment;
 import edu.amd.spbstu.magiccave.fragments.RulesPageFragment;
@@ -23,7 +25,8 @@ import edu.amd.spbstu.magiccave.util.GameMode;
 public class MainMenuActivity extends FragmentActivity implements MainMenuFragment.OnMainMenuOptionSelectedListener
         , GameFragment.OnGameInteractionListener
         , MenuDialogFragment.OnGameMenuButtonsClickListener
-        , WinDialogFragment.OnWinMenuButtonsClickListener {
+        , WinDialogFragment.OnWinMenuButtonsClickListener
+        , LevelButtonFragment.OnLevelButtonClickListener {
 
     private static final String TAG = "MainMenuActivity";
     private static final String SOUND_SWITCH_KEY = "SOUND_SWITCH_KEY";
@@ -77,7 +80,8 @@ public class MainMenuActivity extends FragmentActivity implements MainMenuFragme
     @Override
     public void onMainMenuOptionSelected(MainMenuFragment.MainMenuOption option) {
         switch (option){
-            case SCENARIO:
+            case CHOOSE_LEVEL:
+                onChooseLevelButtonClicked();
                 break;
             case RANDOM:
                 onRandomButtonClicked();
@@ -100,6 +104,14 @@ public class MainMenuActivity extends FragmentActivity implements MainMenuFragme
                 finish();
                 break;
         }
+    }
+
+    private void onChooseLevelButtonClicked() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, LevelChooseFragment.newInstance(), LevelChooseFragment.TAG)
+                .addToBackStack(MainMenuFragment.TAG)
+                .commit();
     }
 
     private void onRandomButtonClicked() {
@@ -151,5 +163,14 @@ public class MainMenuActivity extends FragmentActivity implements MainMenuFragme
         if (gameFragment != null) {
             gameFragment.onWinMenuButtonsClick(type);
         }
+    }
+
+    @Override
+    public void onLevelButtonClick(int level) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, GameFragment.newInstance(GameMode.SCENARIO, level), GameFragment.TAG)
+                .addToBackStack(MainMenuFragment.TAG)
+                .commit();
     }
 }

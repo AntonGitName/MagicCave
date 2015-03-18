@@ -9,4 +9,9 @@
         <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="LevelView">
+        <attr name="level" format="integer" />
+        <attr name="stars" format="integer" />
+    </declare-styleable>
+
 </resources>

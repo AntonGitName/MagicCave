@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import edu.amd.spbstu.magiccave.MainApplication;
 import edu.amd.spbstu.magiccave.R;
-import edu.amd.spbstu.magiccave.util.GameMode;
 
 /**
  * @author iAnton
@@ -29,27 +28,14 @@ public class MenuDialogFragment extends DialogFragment {
 
     private static final String GAME_MODE_KEY = "GAME_MODE_KEY";
 
-    private GameMode mGameMode;
     private OnGameMenuButtonsClickListener listener;
-
-    public static MenuDialogFragment newInstance(GameMode gameMode) {
-        MenuDialogFragment fragment = new MenuDialogFragment();
-        Bundle args = new Bundle();
-        args.putInt(GAME_MODE_KEY, gameMode.getValue());
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     public MenuDialogFragment() {
         // Required empty public constructor
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mGameMode = GameMode.fromValue(getArguments().getInt(GAME_MODE_KEY));
-        }
+    public static MenuDialogFragment newInstance() {
+        return new MenuDialogFragment();
     }
 
     @NonNull
@@ -122,11 +108,11 @@ public class MenuDialogFragment extends DialogFragment {
         return rootView;
     }
 
-    public interface OnGameMenuButtonsClickListener {
-        void onGameMenuButtonsClick(MenuButtonType type);
-    }
-
     public enum MenuButtonType {
         RESUME, RESTART, MAIN_MENU
+    }
+
+    public interface OnGameMenuButtonsClickListener {
+        void onGameMenuButtonsClick(MenuButtonType type);
     }
 }

@@ -131,4 +131,13 @@ public class CandlePuzzle {
 
         return value.toString();
     }
+
+
+    public int getRows() {
+        return gridH;
+    }
+
+    public int getColumns() {
+        return gridW;
+    }
 }

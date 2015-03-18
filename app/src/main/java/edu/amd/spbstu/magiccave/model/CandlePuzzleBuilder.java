@@ -38,6 +38,52 @@ public class CandlePuzzleBuilder {
         }
     }
 
+    private static int removeEmptyRows(List<CandleModel> candles, int h) {
+        Set<Integer> rows = new TreeSet<>();
+        for (int i = 0; i < h; ++i) {
+            rows.add(i);
+        }
+        for (CandleModel model : candles) {
+            rows.remove(model.getY());
+        }
+        for (Integer row : rows) {
+            for (int i = 0; i < candles.size(); ++i) {
+                final CandleModel candle = candles.get(i);
+                if (candle.getY() > row) {
+                    candles.set(i, new CandleModel(candle.getX(), candle.getY() - 1, candle.getId(), candle.isInvertedCorrectly(), candle.getState().toString()));
+                }
+            }
+        }
+        return rows.size();
+    }
+
+    private static int removeEmptyColumns(List<CandleModel> candles, int w) {
+        Set<Integer> columns = new TreeSet<>();
+        for (int i = 0; i < w; ++i) {
+            columns.add(i);
+        }
+        for (CandleModel model : candles) {
+            columns.remove(model.getX());
+        }
+        for (Integer column : columns) {
+            for (int i = 0; i < candles.size(); ++i) {
+                final CandleModel candle = candles.get(i);
+                if (candle.getX() > column) {
+                    candles.set(i, new CandleModel(candle.getX() - 1, candle.getY(), candle.getId(), candle.isInvertedCorrectly(), candle.getState().toString()));
+                }
+            }
+        }
+        return columns.size();
+    }
+
+    public static CandlePuzzle build(long seed) {
+        RND.setSeed(seed);
+        final int w = 3 + RND.nextInt(4);
+        final int h = 2 + RND.nextInt(3);
+        final int n = 5 + RND.nextInt(w * h - 5);
+        return build(w, h, n);
+    }
+
     public static CandlePuzzle build(int w, int h, int n) {
 
         if (w * h < n) {
@@ -59,6 +105,9 @@ public class CandlePuzzleBuilder {
             y = (k / w);
             candles.add(new CandleModel(x, y));
         }
+
+        w -= removeEmptyColumns(candles, w);
+        h -= removeEmptyRows(candles, h);
 
         connect(candles);
 

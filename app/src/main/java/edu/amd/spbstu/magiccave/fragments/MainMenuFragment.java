@@ -96,7 +96,7 @@ public class MainMenuFragment extends Fragment {
         chsLvlButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onMainMenuOptionSelected(MainMenuOption.SCENARIO);
+                mListener.onMainMenuOptionSelected(MainMenuOption.CHOOSE_LEVEL);
             }
         });
 
@@ -161,7 +161,7 @@ public class MainMenuFragment extends Fragment {
     }
 
     public enum MainMenuOption {
-        SCENARIO,
+        CHOOSE_LEVEL,
         RANDOM,
         RULES,
         ABOUT,

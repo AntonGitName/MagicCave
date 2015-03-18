@@ -45,6 +45,11 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="LevelText" parent="DefaultStyle">
+        <item name="android:textColor">@color/game_counter_color</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
     <style name="GameMenuLabel" parent="DefaultStyle">
         <item name="android:textColor">@color/game_counter_color</item>
         <item name="android:textSize">30sp</item>

@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import edu.amd.spbstu.magiccave.MainApplication;
 import edu.amd.spbstu.magiccave.R;
-import edu.amd.spbstu.magiccave.util.GameMode;
 
 /**
  * @author iAnton
@@ -31,30 +30,27 @@ public class WinDialogFragment extends DialogFragment {
     private static final String MOVES_KEY = "MOVES_KEY";
     private static final String BEST_MOVES_KEY = "BEST_MOVES_KEY";
 
-    private GameMode mGameMode;
     private int moves;
     private int bestMoves;
     private OnWinMenuButtonsClickListener listener;
 
-    public static WinDialogFragment newInstance(GameMode gameMode, int moves, int bestMoves) {
+    public WinDialogFragment() {
+        // Required empty public constructor
+    }
+
+    public static WinDialogFragment newInstance(int moves, int bestMoves) {
         WinDialogFragment fragment = new WinDialogFragment();
         Bundle args = new Bundle();
-        args.putInt(GAME_MODE_KEY, gameMode.getValue());
         args.putInt(MOVES_KEY, moves);
         args.putInt(BEST_MOVES_KEY, bestMoves);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public WinDialogFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mGameMode = GameMode.fromValue(getArguments().getInt(GAME_MODE_KEY));
             moves = getArguments().getInt(MOVES_KEY);
             bestMoves = getArguments().getInt(BEST_MOVES_KEY);
         }
@@ -135,11 +131,11 @@ public class WinDialogFragment extends DialogFragment {
         return rootView;
     }
 
-    public interface OnWinMenuButtonsClickListener {
-        void onWinMenuButtonsClick(WinMenuButtonType type);
-    }
-
     public enum WinMenuButtonType {
         RESTART, NEXT, MAIN_MENU
+    }
+
+    public interface OnWinMenuButtonsClickListener {
+        void onWinMenuButtonsClick(WinMenuButtonType type);
     }
 }
