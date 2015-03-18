@@ -62,7 +62,7 @@
 
     <style name="GameWinText" parent="DefaultStyle">
         <item name="android:textColor">@color/game_win_color</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
 </resources>

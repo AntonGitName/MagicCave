@@ -28,6 +28,7 @@ public class RulesPageFragment extends Fragment {
             R.string.task_label, R.string.task_text, R.string.control_label, R.string.control_text };
 
     private static final int PAGES_COUNT = 3;
+    private static final float TEXT_SIZE = 22f;
 
     public RulesPageFragment() {
         // Required empty public constructor
@@ -88,9 +89,11 @@ public class RulesPageFragment extends Fragment {
             TextView textView = (TextView) page.findViewById(R.id.rules_page_label);
             textView.setText(PAGE_STRINGS_RESOURCES_ID[mPageNumber * 2]);
             textView.setTypeface(type, Typeface.BOLD);
+            textView.setTextSize(TEXT_SIZE);
             textView = (TextView) page.findViewById(R.id.rules_page_text);
             textView.setText(PAGE_STRINGS_RESOURCES_ID[mPageNumber * 2 + 1]);
             textView.setTypeface(type);
+            textView.setTextSize(TEXT_SIZE);
             return page;
         }
     }
