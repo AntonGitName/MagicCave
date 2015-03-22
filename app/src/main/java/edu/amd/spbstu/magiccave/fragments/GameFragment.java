@@ -229,6 +229,7 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
     public void onWinMenuButtonsClick(WinDialogFragment.WinMenuButtonType type) {
         switch (type) {
             case RESTART:
+                helpUsed = false;
                 candlePuzzle = new CandlePuzzle(initialCandlePuzzle);
                 gameView.setPuzzle(candlePuzzle, this);
                 moves = 0;

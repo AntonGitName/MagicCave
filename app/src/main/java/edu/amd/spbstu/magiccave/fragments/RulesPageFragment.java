@@ -1,7 +1,6 @@
 package edu.amd.spbstu.magiccave.fragments;
 
 import android.graphics.Typeface;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,7 +9,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import edu.amd.spbstu.magiccave.MainApplication;
@@ -53,13 +51,13 @@ public class RulesPageFragment extends Fragment {
     }
 
     private void initCandleAnimation(View rootView) {
-        AnimationDrawable candleAnimation;
-        ImageView candle = (ImageView) rootView.findViewById(R.id.candleViewLeft);
-        candleAnimation = (AnimationDrawable) candle.getDrawable();
-        candleAnimation.start();
-        candle = (ImageView) rootView.findViewById(R.id.candleViewRight);
-        candleAnimation = (AnimationDrawable) candle.getDrawable();
-        candleAnimation.start();
+//        AnimationDrawable candleAnimation;
+//        ImageView candle = (ImageView) rootView.findViewById(R.id.candleViewLeft);
+//        candleAnimation = (AnimationDrawable) candle.getDrawable();
+//        candleAnimation.start();
+//        candle = (ImageView) rootView.findViewById(R.id.candleViewRight);
+//        candleAnimation = (AnimationDrawable) candle.getDrawable();
+//        candleAnimation.start();
     }
 
     public static final class PageFragment extends Fragment {

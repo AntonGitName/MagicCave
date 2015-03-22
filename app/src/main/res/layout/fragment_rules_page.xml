@@ -2,15 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:background="@drawable/main_menu_background"
     android:orientation="horizontal" >
 
-    <ImageView
+    <!--<ImageView-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:src="@drawable/fire_candle_animation"-->
+        <!--android:id="@+id/candleViewLeft" />-->
+
+    <edu.amd.spbstu.magiccave.views.CandleView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:src="@drawable/fire_candle_animation"
-        android:id="@+id/candleViewLeft" />
+        android:layout_margin="10dp"
+        android:layout_weight="1" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/rules_pager"
@@ -18,11 +25,17 @@
         android:layout_height="match_parent"
         android:layout_weight="3" />
 
-    <ImageView
+    <edu.amd.spbstu.magiccave.views.CandleView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:src="@drawable/fire_candle_animation"
-        android:id="@+id/candleViewRight" />
+        android:layout_margin="10dp"
+        android:layout_weight="1" />
+
+    <!--<ImageView-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:src="@drawable/fire_candle_animation"-->
+        <!--android:id="@+id/candleViewRight" />-->
 
 </LinearLayout>

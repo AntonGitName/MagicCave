@@ -16,7 +16,7 @@ import java.util.TimerTask;
 public abstract class AnimatedView extends View implements Runnable {
 
     private static final String TAG = "AnimatedView";
-    private static final int FRAME_UPDATE_RATE = 10;
+    private static final int FRAME_UPDATE_RATE = 8;
 
     private final Timer mTimer = new Timer();
 

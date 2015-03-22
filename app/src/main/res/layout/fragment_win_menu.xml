@@ -4,11 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/win_menu_background"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical" >
 
     <TextView
         style="@style/GameWinLabel"
         android:layout_gravity="center_horizontal"
+        android:paddingTop="30dp"
         android:text="@string/game_win_label"
         android:id="@+id/game_win_label" />
 
@@ -35,5 +36,6 @@
         style="@style/GameOptionText"
         android:layout_gravity="center_horizontal"
         android:text="@string/game_main_menu_btn"
-        android:id="@+id/main_menu_btn" />
+        android:id="@+id/main_menu_btn"
+        android:paddingBottom="30dp" />
 </LinearLayout>

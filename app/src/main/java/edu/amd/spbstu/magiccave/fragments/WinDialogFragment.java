@@ -15,6 +15,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 import edu.amd.spbstu.magiccave.MainApplication;
 import edu.amd.spbstu.magiccave.R;
 
@@ -29,6 +31,11 @@ public class WinDialogFragment extends DialogFragment {
     private static final String GAME_MODE_KEY = "GAME_MODE_KEY";
     private static final String MOVES_KEY = "MOVES_KEY";
     private static final String BEST_MOVES_KEY = "BEST_MOVES_KEY";
+
+    private static final String RUS = "RUS";
+
+    private static final String[] moveWordsRus = {"ход", "хода", "ходов"};
+    private static final String[] moveWordsEng = {"move", "moves"};
 
     private int moves;
     private int bestMoves;
@@ -89,7 +96,8 @@ public class WinDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         final Typeface type = MainApplication.RESOURCE_LOADER.getTypeface();
         final View rootView = inflater.inflate(R.layout.fragment_win_menu, container, false);
-        final String winText = String.format(getString(R.string.game_win_text), moves, bestMoves);
+        final String moveWord = getMoveWord(moves);
+        final String winText = String.format(getString(R.string.game_win_text), moves, moveWord, bestMoves);
         final TextView winTextView = (TextView) rootView.findViewById(R.id.game_win_text);
         final Button nextButton = (Button) rootView.findViewById(R.id.next_btn);
         final Button restartButton = (Button) rootView.findViewById(R.id.restart_btn);
@@ -129,6 +137,22 @@ public class WinDialogFragment extends DialogFragment {
         ((TextView) rootView.findViewById(R.id.game_win_label)).setTypeface(type);
 
         return rootView;
+    }
+
+    private String getMoveWord(int moves) {
+        switch (Locale.getDefault().getISO3Language().toUpperCase()) {
+            case RUS:
+                final int lastDigit = moves % 10;
+                if (lastDigit == 1) {
+                    return moveWordsRus[0];
+                } else if (lastDigit <= 5 && lastDigit <= 2) {
+                    return moveWordsRus[1];
+                } else {
+                    return moveWordsRus[2];
+                }
+            default:
+                return (moves == 1) ? moveWordsEng[0] : moveWordsEng[1];
+        }
     }
 
     public enum WinMenuButtonType {

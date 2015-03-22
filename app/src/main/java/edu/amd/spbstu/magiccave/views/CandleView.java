@@ -149,7 +149,7 @@ public class CandleView extends AnimatedView {
     }
 
     private static final class CandleImage {
-        private static final int ITERATIONS_PER_FRAME = 16;
+        private static final int ITERATIONS_PER_FRAME = 6;
         private static final int ITERATIONS_PER_STATE = 64;
 
         public final Paint candlePaint = new Paint();
@@ -171,6 +171,7 @@ public class CandleView extends AnimatedView {
             handPaint.setAntiAlias(true);
             nextFirePaint.setAntiAlias(true);
             prevFirePaint.setAntiAlias(true);
+            animationTimer = RND.nextInt(ITERATIONS_PER_FRAME);
             switch (modelState) {
                 case ON:
                     state = State.LIGHT;
@@ -240,8 +241,10 @@ public class CandleView extends AnimatedView {
             }
 
             int alpha = animationTimer * 255 / ITERATIONS_PER_FRAME;
-            prevFirePaint.setAlpha(alpha * stateTimer / (ITERATIONS_PER_STATE - 1));
-            nextFirePaint.setAlpha((255 - alpha) * stateTimer / (ITERATIONS_PER_STATE - 1));
+            prevFirePaint.setAlpha(255 * stateTimer / (ITERATIONS_PER_STATE - 1));
+            nextFirePaint.setAlpha(0);
+//            nextFirePaint.setAlpha(alpha * stateTimer / (ITERATIONS_PER_STATE - 1));
+//            prevFirePaint.setAlpha((255 - alpha) * stateTimer / (ITERATIONS_PER_STATE - 1));
         }
 
         public void loadImages(ResourceLoader rl, Point size) {

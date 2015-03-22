@@ -7,7 +7,7 @@
     <string name="choose_level_btn">Choose level</string>
     <string name="random_level_btn">Random level</string>
     <string name="rules_btn">Rules</string>
-    <string name="about_btn">About</string>
+    <string name="about_btn">Apple</string>
     <string name="quit_btn">Quit</string>
     <string name="task_label">The Task</string>
     <string name="task_text">The task of every level is simple. You are here to light all the candles! You can change the state of any candle but all of them are somehow connected to each other so changing state of only one candle will cause some of its neighbours to change their state too. Don\'t mess up and you will beat the puzzle!</string>
@@ -22,9 +22,8 @@
     <string name="game_main_menu_btn">Main menu</string>
     <string name="game_restart_btn">Restart</string>
     <string name="game_next_btn">Next</string>
-    <string name="game_menu_label">Menu</string>
     <string name="game_win_label">Congratulations!</string>
-    <string name="game_win_text" formatted="false">You solved the puzzle in %d moves. The best solution takes %d moves.</string>
+    <string name="game_win_text" formatted="false">You solved the puzzle in %d %s. The best solution takes %d moves.</string>
     <string name="game_help_text">Magic</string>
 
     <!-- Applied Math Department Activity -->

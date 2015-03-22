@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.TextView;
 
 import edu.amd.spbstu.magiccave.MainApplication;
 import edu.amd.spbstu.magiccave.R;
@@ -104,7 +103,6 @@ public class MenuDialogFragment extends DialogFragment {
                 MenuDialogFragment.this.dismiss();
             }
         });
-        ((TextView) rootView.findViewById(R.id.game_menu_label)).setTypeface(type);
         return rootView;
     }
 

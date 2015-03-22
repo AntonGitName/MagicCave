@@ -24,14 +24,23 @@
         android:orientation="horizontal"
         android:weightSum="1" >
 
-        <TextView
-            android:id="@+id/rules_page_text"
+        <ScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.7"
-            android:gravity="center"
-            android:textColor="@color/rules_page_text_color"
-            android:textSize="20sp" />
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/scrollView" >
+
+            <edu.amd.spbstu.magiccave.views.AutoResizeTextView
+                android:id="@+id/rules_page_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/rules_page_text_color"
+                android:textSize="20sp" />
+        </ScrollView>
 
     </LinearLayout>
 </LinearLayout>
