@@ -20,6 +20,8 @@ import edu.amd.spbstu.magiccave.util.GameMode;
 import edu.amd.spbstu.magiccave.views.CandleView;
 import edu.amd.spbstu.magiccave.views.GameView;
 
+import static edu.amd.spbstu.magiccave.fragments.LevelChooseFragment.LEVEL_SEED_MAP;
+
 /**
  * @author Anton
  * @since 23.02.2015
@@ -36,6 +38,7 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
     private static final int DEFAULT_PUZZLE_ROW = 3;
     private static final int DEFAULT_PUZZLE_COL = 4;
     private static final int MAX_LEVEL = 9;
+    private static final int MOVES_TO_ENABLE_HELP = 5;
 
     private GameMode mGameMode;
     private CandlePuzzle candlePuzzle;
@@ -49,6 +52,7 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
     private Button helpBtn;
     private int level;
     private boolean helpUsed;
+    private Button menuBtn;
 
     public GameFragment() {
         // Required empty public constructor
@@ -118,7 +122,7 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
 
     @Override
     public void onHelpAnimationFinished() {
-        helpBtn.setEnabled(true);
+        menuBtn.setEnabled(true);
         gameView.setEnabledCandles(true);
         checkIfPuzzleSolved();
     }
@@ -136,7 +140,7 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
                     candlePuzzle = CandlePuzzleBuilder.build(DEFAULT_PUZZLE_COL, DEFAULT_PUZZLE_ROW, DEFAULT_PUZZLE_SIZE);
                     break;
                 case SCENARIO:
-                    candlePuzzle = CandlePuzzleBuilder.build((long) level);
+                    candlePuzzle = CandlePuzzleBuilder.build(LEVEL_SEED_MAP[level - 1]);
                     break;
             }
             initialCandlePuzzle = candlePuzzle.toString();
@@ -149,7 +153,8 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
         helpBtn = (Button) rootView.findViewById(R.id.game_help_btn);
         helpBtn.setOnClickListener(new OnHelpButtonClickedListener());
         helpBtn.setTypeface(type);
-        final Button menuBtn = (Button) rootView.findViewById(R.id.game_menu_btn);
+        helpBtn.setEnabled(false);
+        menuBtn = (Button) rootView.findViewById(R.id.game_menu_btn);
         menuBtn.setOnClickListener(new OnMenuButtonClickListener());
         menuBtn.setTypeface(type);
         counterView = (TextView) rootView.findViewById(R.id.touch_counter);
@@ -158,6 +163,10 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
     }
 
     public void onGameMenuButtonsClick(MenuDialogFragment.MenuButtonType type) {
+        setEnabledButtons(true);
+        if (moves < MOVES_TO_ENABLE_HELP || helpUsed) {
+            helpBtn.setEnabled(false);
+        }
         switch (type) {
 
             case RESUME:
@@ -177,7 +186,10 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
 
     @Override
     public void onCandleViewClick(boolean needCheck) {
-        counterView.setText("  " + String.valueOf(++moves), TextView.BufferType.SPANNABLE);
+        if (++moves >= MOVES_TO_ENABLE_HELP && !helpUsed) {
+            helpBtn.setEnabled(true);
+        }
+        counterView.setText("  " + String.valueOf(moves), TextView.BufferType.SPANNABLE);
         if (needCheck) {
             checkIfPuzzleSolved();
         }
@@ -200,6 +212,7 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
                 stars = 2;
             }
             saveStars(level, stars);
+            setEnabledButtons(false);
             WinDialogFragment.newInstance(moves, bestMoves).show(getFragmentManager(), WinDialogFragment.TAG);
         }
     }
@@ -227,6 +240,8 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
     }
 
     public void onWinMenuButtonsClick(WinDialogFragment.WinMenuButtonType type) {
+        setEnabledButtons(true);
+        helpBtn.setEnabled(false);
         switch (type) {
             case RESTART:
                 helpUsed = false;
@@ -258,6 +273,12 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
         }
     }
 
+    private void setEnabledButtons(boolean set) {
+        helpBtn.setEnabled(set);
+        menuBtn.setEnabled(set);
+        gameView.setEnabledCandles(set);
+    }
+
     public interface OnGameInteractionListener {
         void onGameInteraction();
     }
@@ -266,8 +287,7 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
 
         @Override
         public void onClick(View view) {
-            helpBtn.setEnabled(false);
-            gameView.setEnabledCandles(false);
+            setEnabledButtons(false);
             gameView.showHelpAnimation(GameFragment.this.candlePuzzle.getSolution(), GameFragment.this);
             gameView.setLinesVisible(true);
             helpUsed = true;
@@ -278,6 +298,7 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
 
         @Override
         public void onClick(View view) {
+            setEnabledButtons(false);
             MenuDialogFragment.newInstance().show(GameFragment.this.getFragmentManager(), MenuDialogFragment.TAG);
         }
     }

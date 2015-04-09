@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/light_cave_background"
+    android:orientation="vertical"
     tools:context="edu.amd.spbstu.magiccave.fragments.GameFragment">
 
     <FrameLayout
@@ -12,30 +12,33 @@
         android:layout_weight="6">
 
         <Button
-            style="@style/GameOptionText"
             android:id="@+id/game_help_btn"
+            style="@style/GameOptionText"
             android:layout_gravity="center_horizontal|left"
+            android:background="@drawable/button_selector"
+            android:enabled="false"
             android:text="@string/game_help_text" />
 
         <TextView
-            style="@style/GameCounterText"
             android:id="@+id/touch_counter"
+            style="@style/GameCounterText"
             android:layout_gravity="center" />
 
         <Button
-            style="@style/GameOptionText"
             android:id="@+id/game_menu_btn"
+            style="@style/GameOptionText"
             android:layout_gravity="right|top"
+            android:background="@drawable/button_selector"
             android:text="@string/game_menu_btn" />
 
     </FrameLayout>
 
     <edu.amd.spbstu.magiccave.views.GameView
+        android:id="@+id/game_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:stretchColumns="*"
-        android:id="@+id/game_view">
+        android:stretchColumns="*">
 
         </edu.amd.spbstu.magiccave.views.GameView>
 

@@ -17,11 +17,10 @@ import edu.amd.spbstu.magiccave.R;
 public class LevelChooseFragment extends Fragment {
 
     public static final String TAG = "LevelChooseFragment";
-
     public static final String LEVEL_KEY = "LEVEL_KEY";
+    public static final long[] LEVEL_SEED_MAP = {7, 2, 3, 8, 6, 4, 5, 1, 9};
     private static final int ROW_NUM = 3;
     private static final int COL_NUM = 3;
-
     private static final int[] LEVEL_BUTTON_CONTAINRES = {
             R.id.level1, R.id.level2, R.id.level3, R.id.level4, R.id.level5, R.id.level6, R.id.level7, R.id.level8, R.id.level9
     };

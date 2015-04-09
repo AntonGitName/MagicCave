@@ -81,6 +81,9 @@ public class CandleView extends AnimatedView {
         viewH = h;
         viewW = w;
         isSizeSet = true;
+        if (isInEditMode()) {
+            return;
+        }
         mCandleImage.loadImages(mResourceLoader, new Point(w, h));
     }
 
@@ -130,6 +133,10 @@ public class CandleView extends AnimatedView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        if (isInEditMode()) {
+            return;
+        }
 
         drawCandleImage(canvas);
     }
