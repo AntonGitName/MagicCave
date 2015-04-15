@@ -14,10 +14,12 @@ import android.widget.TextView;
 
 import edu.amd.spbstu.magiccave.MainApplication;
 import edu.amd.spbstu.magiccave.R;
+import edu.amd.spbstu.magiccave.interfaces.OnCandleViewClickListener;
+import edu.amd.spbstu.magiccave.interfaces.OnConnectionFinishedListener;
+import edu.amd.spbstu.magiccave.interfaces.OnHelpAnimationFinishedListener;
 import edu.amd.spbstu.magiccave.model.CandlePuzzle;
 import edu.amd.spbstu.magiccave.model.CandlePuzzleBuilder;
 import edu.amd.spbstu.magiccave.util.GameMode;
-import edu.amd.spbstu.magiccave.views.CandleView;
 import edu.amd.spbstu.magiccave.views.GameView;
 
 import static edu.amd.spbstu.magiccave.fragments.LevelChooseFragment.LEVEL_SEED_MAP;
@@ -26,7 +28,8 @@ import static edu.amd.spbstu.magiccave.fragments.LevelChooseFragment.LEVEL_SEED_
  * @author Anton
  * @since 23.02.2015
  */
-public class GameFragment extends Fragment implements CandleView.OnCandleViewClickListener, GameView.OnHelpAnimationFinishedListener {
+public class GameFragment extends Fragment implements OnHelpAnimationFinishedListener
+        , OnConnectionFinishedListener {
 
     public static final String TAG = "GameFragment";
 
@@ -38,9 +41,10 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
     private static final int DEFAULT_PUZZLE_ROW = 3;
     private static final int DEFAULT_PUZZLE_COL = 4;
     private static final int MAX_LEVEL = 9;
-    private static final int MOVES_TO_ENABLE_HELP = 5;
+    private static final int MOVES_TO_ENABLE_HELP = 15;
+    private static final int WRONG_CONNECTION_PENALTY = 5;
 
-    private GameMode mGameMode;
+    private GameMode gameMode;
     private CandlePuzzle candlePuzzle;
     private String initialCandlePuzzle;
     private int moves;
@@ -48,11 +52,14 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
 
     private GameView gameView;
     private TextView counterView;
-    private OnGameInteractionListener mListener;
+    private OnGameInteractionListener onGameInteractionListener;
     private Button helpBtn;
     private int level;
     private boolean helpUsed;
     private Button menuBtn;
+    private Button connectBtn;
+
+    private ConnectionListener connectionListener;
 
     public GameFragment() {
         // Required empty public constructor
@@ -85,11 +92,10 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
-            mGameMode = GameMode.fromValue(savedInstanceState.getInt(GAME_MODE_KEY));
+            gameMode = GameMode.fromValue(savedInstanceState.getInt(GAME_MODE_KEY));
             level = savedInstanceState.getInt(GAME_MODE_KEY, 0);
             candlePuzzle = new CandlePuzzle(savedInstanceState.getString(PUZZLE_KEY));
             initialCandlePuzzle = candlePuzzle.toString();
-            moves = 0;
             bestMoves = candlePuzzle.getSolution().size();
             Log.v(TAG, "Instance state loaded");
         }
@@ -100,21 +106,20 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mGameMode = GameMode.fromValue(getArguments().getInt(GAME_MODE_KEY));
-            if (mGameMode == GameMode.SCENARIO) {
+            gameMode = GameMode.fromValue(getArguments().getInt(GAME_MODE_KEY));
+            if (gameMode == GameMode.SCENARIO) {
                 this.level = getArguments().getInt(GAME_LEVEL_KEY);
             }
             candlePuzzle = null;
-            moves = 0;
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(GAME_MODE_KEY, mGameMode.getValue());
+        outState.putInt(GAME_MODE_KEY, gameMode.getValue());
         outState.putString(PUZZLE_KEY, candlePuzzle.toString());
-        if (mGameMode == GameMode.SCENARIO) {
+        if (gameMode == GameMode.SCENARIO) {
             outState.putInt(GAME_LEVEL_KEY, level);
         }
         Log.v(TAG, "Instance state saved");
@@ -135,7 +140,7 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
 
         gameView = (GameView) rootView.findViewById(R.id.game_view);
         if (candlePuzzle == null) {
-            switch (mGameMode) {
+            switch (gameMode) {
                 case RANDOM:
                     candlePuzzle = CandlePuzzleBuilder.build(DEFAULT_PUZZLE_COL, DEFAULT_PUZZLE_ROW, DEFAULT_PUZZLE_SIZE);
                     break;
@@ -144,22 +149,32 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
                     break;
             }
             initialCandlePuzzle = candlePuzzle.toString();
-            moves = 0;
-            helpUsed = false;
             bestMoves = candlePuzzle.getSolution().size();
         }
-        gameView.setPuzzle(candlePuzzle, this);
-
         helpBtn = (Button) rootView.findViewById(R.id.game_help_btn);
         helpBtn.setOnClickListener(new OnHelpButtonClickedListener());
         helpBtn.setTypeface(type);
-        helpBtn.setEnabled(false);
+
         menuBtn = (Button) rootView.findViewById(R.id.game_menu_btn);
         menuBtn.setOnClickListener(new OnMenuButtonClickListener());
         menuBtn.setTypeface(type);
+
+        connectBtn = (Button) rootView.findViewById(R.id.connect_btn);
+        connectBtn.setTypeface(type);
+        connectBtn.setOnClickListener(new OnConnectButtonClickedListener());
+
         counterView = (TextView) rootView.findViewById(R.id.touch_counter);
 
+        connectionListener = new ConnectionListener(gameView);
+
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        resetGame();
     }
 
     public void onGameMenuButtonsClick(MenuDialogFragment.MenuButtonType type) {
@@ -173,25 +188,11 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
                 break;
             case RESTART:
                 candlePuzzle = new CandlePuzzle(initialCandlePuzzle);
-                gameView.setPuzzle(candlePuzzle, this);
-                moves = 0;
-                helpUsed = false;
-                counterView.setText("  " + String.valueOf(moves), TextView.BufferType.SPANNABLE);
+                resetGame();
                 break;
             case MAIN_MENU:
-                mListener.onGameInteraction();
+                onGameInteractionListener.onGameInteraction();
                 break;
-        }
-    }
-
-    @Override
-    public void onCandleViewClick(boolean needCheck) {
-        if (++moves >= MOVES_TO_ENABLE_HELP && !helpUsed) {
-            helpBtn.setEnabled(true);
-        }
-        counterView.setText("  " + String.valueOf(moves), TextView.BufferType.SPANNABLE);
-        if (needCheck) {
-            checkIfPuzzleSolved();
         }
     }
 
@@ -203,21 +204,31 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
             }
             gameView.setEnabledCandles(true);
             gameView.setLinesVisible(true);
-            int stars;
-            if (helpUsed) {
-                stars = 1;
-            } else if (moves == bestMoves) {
-                stars = 3;
-            } else {
-                stars = 2;
+            if (gameMode == GameMode.SCENARIO) {
+                saveStars(level);
             }
-            saveStars(level, stars);
             setEnabledButtons(false);
             WinDialogFragment.newInstance(moves, bestMoves).show(getFragmentManager(), WinDialogFragment.TAG);
         }
     }
 
-    private void saveStars(int level, int stars) {
+    private void resetGame() {
+        resetMoves();
+        gameView.setPuzzle(candlePuzzle, connectionListener, this);
+        setEnabledButtons(true);
+        helpBtn.setEnabled(false);
+        helpUsed = false;
+    }
+
+    private void saveStars(int level) {
+        int stars;
+        if (helpUsed) {
+            stars = 1;
+        } else if (moves == bestMoves) {
+            stars = 3;
+        } else {
+            stars = 2;
+        }
         if (getActivity().getPreferences(Context.MODE_PRIVATE).getInt(LevelChooseFragment.LEVEL_KEY + level, 0) < stars)
             getActivity().getPreferences(Context.MODE_PRIVATE).edit().putInt(LevelChooseFragment.LEVEL_KEY + level, stars).commit();
     }
@@ -226,7 +237,7 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnGameInteractionListener) activity;
+            onGameInteractionListener = (OnGameInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnGameInteractionListener");
@@ -236,7 +247,7 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        onGameInteractionListener = null;
     }
 
     public void onWinMenuButtonsClick(WinDialogFragment.WinMenuButtonType type) {
@@ -244,14 +255,11 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
         helpBtn.setEnabled(false);
         switch (type) {
             case RESTART:
-                helpUsed = false;
                 candlePuzzle = new CandlePuzzle(initialCandlePuzzle);
-                gameView.setPuzzle(candlePuzzle, this);
-                moves = 0;
-                counterView.setText("  " + String.valueOf(moves), TextView.BufferType.SPANNABLE);
+                resetGame();
                 break;
             case NEXT:
-                if (mGameMode == GameMode.RANDOM) {
+                if (gameMode == GameMode.RANDOM) {
                     candlePuzzle = CandlePuzzleBuilder.build(DEFAULT_PUZZLE_COL, DEFAULT_PUZZLE_ROW, DEFAULT_PUZZLE_SIZE);
                 } else {
                     ++level;
@@ -260,15 +268,13 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
                     }
                     candlePuzzle = CandlePuzzleBuilder.build((long) level);
                 }
-                helpUsed = false;
                 initialCandlePuzzle = candlePuzzle.toString();
-                gameView.setPuzzle(candlePuzzle, this);
-                moves = 0;
+                gameView.setPuzzle(candlePuzzle, connectionListener, this);
+                resetMoves();
                 bestMoves = candlePuzzle.getSolution().size();
-                counterView.setText("  " + String.valueOf(moves), TextView.BufferType.SPANNABLE);
                 break;
             case MAIN_MENU:
-                mListener.onGameInteraction();
+                onGameInteractionListener.onGameInteraction();
                 break;
         }
     }
@@ -276,11 +282,52 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
     private void setEnabledButtons(boolean set) {
         helpBtn.setEnabled(set);
         menuBtn.setEnabled(set);
+        connectBtn.setEnabled(set);
         gameView.setEnabledCandles(set);
+    }
+
+    @Override
+    public void onConnectionFinished(boolean isSuccessfully) {
+        connectionListener.setIsConnecting(false);
+        setEnabledButtons(true);
+        helpBtn.setEnabled(false);
+        if (!isSuccessfully) {
+            addMoves(WRONG_CONNECTION_PENALTY);
+        } else {
+            addMoves(0);
+        }
+    }
+
+    private void addMoves(int movesToAdd) {
+        moves += movesToAdd;
+        counterView.setText("  " + String.valueOf(moves), TextView.BufferType.SPANNABLE);
+        if (moves >= MOVES_TO_ENABLE_HELP && !helpUsed && !connectionListener.isConnecting()) {
+            helpBtn.setEnabled(true);
+        }
+    }
+
+    private void resetMoves() {
+        moves = 0;
+        counterView.setText("  ", TextView.BufferType.SPANNABLE);
     }
 
     public interface OnGameInteractionListener {
         void onGameInteraction();
+    }
+
+    public interface OnCandlesConnectedListener {
+
+        void OnCandlesConnected(int firstCandleId, int secondCandleId);
+    }
+
+    private final class OnConnectButtonClickedListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            setEnabledButtons(false);
+            gameView.setEnabledCandles(true);
+            connectionListener.setIsConnecting(true);
+        }
     }
 
     private final class OnHelpButtonClickedListener implements View.OnClickListener {
@@ -300,6 +347,46 @@ public class GameFragment extends Fragment implements CandleView.OnCandleViewCli
         public void onClick(View view) {
             setEnabledButtons(false);
             MenuDialogFragment.newInstance().show(GameFragment.this.getFragmentManager(), MenuDialogFragment.TAG);
+        }
+    }
+
+    private class ConnectionListener implements OnCandleViewClickListener {
+
+        private static final int NOT_USED = -1;
+        private final OnCandlesConnectedListener listener;
+        private boolean isConnecting;
+        private int firstCandleId;
+
+        public ConnectionListener(OnCandlesConnectedListener listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        public void onCandleViewClick(int id, boolean needCheck) {
+            if (isConnecting) {
+                if (firstCandleId == NOT_USED) {
+                    firstCandleId = id;
+                } else {
+                    listener.OnCandlesConnected(firstCandleId, id);
+                    setIsConnecting(false);
+                }
+            } else {
+                addMoves(1);
+                if (needCheck) {
+                    checkIfPuzzleSolved();
+                }
+            }
+
+        }
+
+        @Override
+        public boolean isConnecting() {
+            return isConnecting;
+        }
+
+        public void setIsConnecting(boolean isConnecting) {
+            this.firstCandleId = NOT_USED;
+            this.isConnecting = isConnecting;
         }
     }
 }

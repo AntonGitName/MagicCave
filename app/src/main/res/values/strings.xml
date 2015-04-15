@@ -25,6 +25,7 @@
     <string name="game_win_label">Congratulations!</string>
     <string name="game_win_text" formatted="false">You solved the puzzle in %d %s. The best solution takes %d moves.</string>
     <string name="game_help_text">Magic</string>
+    <string name="game_connect_text">Feel Lucky!</string>
 
     <!-- Applied Math Department Activity -->
     <string name="about_app_name">Applied Math Dep</string>

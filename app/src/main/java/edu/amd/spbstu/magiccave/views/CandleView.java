@@ -3,6 +3,7 @@ package edu.amd.spbstu.magiccave.views;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.AttributeSet;
@@ -12,6 +13,8 @@ import java.util.Random;
 
 import edu.amd.spbstu.magiccave.IO.ResourceLoader;
 import edu.amd.spbstu.magiccave.MainApplication;
+import edu.amd.spbstu.magiccave.interfaces.OnAnimationFinishedListener;
+import edu.amd.spbstu.magiccave.interfaces.OnCandleViewClickListener;
 import edu.amd.spbstu.magiccave.model.CandleModel;
 
 /**
@@ -24,31 +27,32 @@ public class CandleView extends AnimatedView {
 
     private static final Random RND = new Random();
 
-    private final ResourceLoader mResourceLoader;
-    private final CandleImage mCandleImage;
-    private final CandleModel mModel;
+    private final ResourceLoader resourceLoader;
+    private final CandleImage candleImage;
+    private final CandleModel candleModel;
     private final OnCandleViewClickListener listener;
-
+    private final Paint selectionCirclePaint;
     private int viewW;
     private int viewH;
     private boolean isSizeSet = false;
     private int solveAnimationTimer;
     private boolean isSolveAnimationShowing;
-
     private OnAnimationFinishedListener animationFinishedListener;
+    private boolean isSelected;
 
     public CandleView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.mResourceLoader = MainApplication.RESOURCE_LOADER;
-        this.mModel = new CandleModel(1, 1);
-        this.mCandleImage = new CandleImage(mModel.getState());
+        this.resourceLoader = MainApplication.RESOURCE_LOADER;
+        this.candleModel = new CandleModel(1, 1);
+        this.candleImage = new CandleImage(candleModel.getState());
         this.listener = null;
+        this.selectionCirclePaint = null;
 
         setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                mModel.inverseWithNeighbours();
+                candleModel.inverseWithNeighbours();
             }
         });
     }
@@ -56,23 +60,36 @@ public class CandleView extends AnimatedView {
     public CandleView(Context ctx, CandleModel model, final OnCandleViewClickListener listener) {
         super(ctx);
 
-        this.mModel = model;
-        this.mResourceLoader = MainApplication.RESOURCE_LOADER;
-        this.mCandleImage = new CandleImage(model.getState());
+        this.candleModel = model;
+        this.resourceLoader = MainApplication.RESOURCE_LOADER;
+        this.candleImage = new CandleImage(model.getState());
         this.listener = listener;
+        this.selectionCirclePaint = new Paint();
+
+        selectionCirclePaint.setAntiAlias(true);
+        selectionCirclePaint.setColor(Color.BLUE);
+        selectionCirclePaint.setStyle(Paint.Style.STROKE);
 
         setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                mModel.inverseWithNeighbours();
-                listener.onCandleViewClick(true);
+                if (!listener.isConnecting()) {
+                    candleModel.inverseWithNeighbours();
+                } else {
+                    isSelected = true;
+                }
+                listener.onCandleViewClick(getModel().getId(), true);
             }
         });
     }
 
+    public void setIsSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+    }
+
     public CandleModel getModel() {
-        return mModel;
+        return candleModel;
     }
 
     @Override
@@ -84,12 +101,12 @@ public class CandleView extends AnimatedView {
         if (isInEditMode()) {
             return;
         }
-        mCandleImage.loadImages(mResourceLoader, new Point(w, h));
+        candleImage.loadImages(resourceLoader, new Point(w, h));
     }
 
     private void drawCandleImage(Canvas canvas) {
         if (isSizeSet) {
-            mCandleImage.setState(mModel.getState());
+            candleImage.setState(candleModel.getState());
 
             drawCandle(canvas);
             if (isSolveAnimationShowing) {
@@ -99,23 +116,29 @@ public class CandleView extends AnimatedView {
     }
 
     private void drawCandle(Canvas canvas) {
-        mCandleImage.incTimer();
-        int offsetX = (viewW - mCandleImage.candle.getWidth()) / 2;
-        int offsetY = (viewH - mCandleImage.candle.getHeight() - mCandleImage.nextFire.getHeight()) / 2;
-        canvas.drawBitmap(mCandleImage.candle, offsetX, offsetY + viewH / 2, mCandleImage.candlePaint);
-        offsetX = (viewW - mCandleImage.prevFire.getWidth()) / 2;
-        canvas.drawBitmap(mCandleImage.prevFire, offsetX, offsetY, mCandleImage.prevFirePaint);
-        canvas.drawBitmap(mCandleImage.nextFire, offsetX, offsetY, mCandleImage.nextFirePaint);
+        candleImage.incTimer();
+        int offsetX = (viewW - candleImage.candle.getWidth()) / 2;
+        int offsetY = (viewH - candleImage.candle.getHeight() - candleImage.nextFire.getHeight()) / 2;
+        canvas.drawBitmap(candleImage.candle, offsetX, offsetY + viewH / 2, candleImage.candlePaint);
+        offsetX = (viewW - candleImage.prevFire.getWidth()) / 2;
+        canvas.drawBitmap(candleImage.prevFire, offsetX, offsetY, candleImage.prevFirePaint);
+        canvas.drawBitmap(candleImage.nextFire, offsetX, offsetY, candleImage.nextFirePaint);
+
+        if (isSelected) {
+            final float cx = viewW / 2;
+            final float cy = viewH / 2;
+            canvas.drawCircle(cx, cy, (float) Math.min(viewH, viewW) / 2, selectionCirclePaint);
+        }
     }
 
     private void drawSolveAnimation(Canvas canvas) {
         final float t = 6f * (float) Math.PI * (float) solveAnimationTimer / (float) SOLVE_ANIMATION_ITERATIONS;
         final int x = (int) (viewW * (2.25f + Math.cos(t) * 0.25f)) / 4;
         final int y = viewH / 2;
-        canvas.drawBitmap(mCandleImage.hand, x, y, mCandleImage.handPaint);
+        canvas.drawBitmap(candleImage.hand, x, y, candleImage.handPaint);
         ++solveAnimationTimer;
         if (solveAnimationTimer == SOLVE_ANIMATION_ITERATIONS / 2) {
-            this.mModel.inverseWithNeighbours();
+            this.candleModel.inverseWithNeighbours();
         }
         if (solveAnimationTimer == SOLVE_ANIMATION_ITERATIONS) {
             finishSolveAnimation();
@@ -125,7 +148,7 @@ public class CandleView extends AnimatedView {
     private void finishSolveAnimation() {
         isSolveAnimationShowing = false;
         solveAnimationTimer = 0;
-        listener.onCandleViewClick(false);
+        listener.onCandleViewClick(getModel().getId(), false);
         animationFinishedListener.onAnimationFinished();
         animationFinishedListener = null;
     }
@@ -145,14 +168,6 @@ public class CandleView extends AnimatedView {
         this.isSolveAnimationShowing = true;
         this.solveAnimationTimer = 0;
         this.animationFinishedListener = listener;
-    }
-
-    public interface OnCandleViewClickListener {
-        void onCandleViewClick(boolean needCheck);
-    }
-
-    public interface OnAnimationFinishedListener {
-        void onAnimationFinished();
     }
 
     private static final class CandleImage {

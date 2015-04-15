@@ -18,17 +18,7 @@ public abstract class AnimatedView extends View implements Runnable {
     private static final String TAG = "AnimatedView";
     private static final int FRAME_UPDATE_RATE = 8;
 
-    private final Timer mTimer = new Timer();
-
-    private void setupTimer() {
-        final Handler handler = new Handler(Looper.getMainLooper());
-        mTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(AnimatedView.this);
-            }
-        }, FRAME_UPDATE_RATE, FRAME_UPDATE_RATE);
-    }
+    private final Timer timer = new Timer();
 
     public AnimatedView(Context context) {
         super(context);
@@ -36,6 +26,16 @@ public abstract class AnimatedView extends View implements Runnable {
 
     public AnimatedView(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    private void setupTimer() {
+        final Handler handler = new Handler(Looper.getMainLooper());
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(AnimatedView.this);
+            }
+        }, FRAME_UPDATE_RATE, FRAME_UPDATE_RATE);
     }
 
     @Override
@@ -48,8 +48,8 @@ public abstract class AnimatedView extends View implements Runnable {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
 
-        mTimer.cancel();
-        mTimer.purge();
+        timer.cancel();
+        timer.purge();
     }
 
     @Override

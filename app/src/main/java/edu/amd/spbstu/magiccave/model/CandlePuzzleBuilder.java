@@ -1,11 +1,16 @@
 package edu.amd.spbstu.magiccave.model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
@@ -17,6 +22,8 @@ public class CandlePuzzleBuilder {
     private static final Random RND = new Random();
     private static final float EDGE_PROBABILITY = 0.25f;
     private static final float INVERSE_PROBABILITY = 0.5f;
+    private static final int MAX_ITERATIONS = 200;
+    private static final String TAG = CandlePuzzleBuilder.class.getSimpleName();
 
     private static int dist(CandleModel a, CandleModel b) {
         return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY());
@@ -84,7 +91,8 @@ public class CandlePuzzleBuilder {
         return build(w, h, n);
     }
 
-    public static CandlePuzzle build(int w, int h, int n) {
+    @Deprecated
+    public static CandlePuzzle buildOld(int w, int h, int n) {
 
         if (w * h < n) {
             throw new IllegalArgumentException("Grid is too small");
@@ -92,7 +100,7 @@ public class CandlePuzzleBuilder {
 
         final List<CandleModel> candles = new ArrayList<>(n);
 
-        Set<Integer> rects = new TreeSet<>();
+        final Set<Integer> rects = new TreeSet<>();
         while (rects.size() < n) {
             int k = RND.nextInt(w * h);
             rects.add(k);
@@ -142,4 +150,106 @@ public class CandlePuzzleBuilder {
         }
         return candlePuzzle;
     }
+
+    public static CandlePuzzle build(int w, int h, int n) {
+        final Map<Integer, List<Integer>> graph = new TreeMap<>();
+        for (int i = 0; i < n; ++i) {
+            final List<Integer> list = new ArrayList<>();
+            if (i != 0) {
+                list.add(i - 1);
+            }
+            if (i != n - 1) {
+                list.add(i + 1);
+            }
+            graph.put(i, list);
+        }
+        for (int i = 0; i < n; ++i) {
+            final List<Integer> candidates = new ArrayList<>(n);
+            for (int j = 0; j < n; ++j) {
+                if (j != i && !graph.get(i).contains(j)) {
+                    candidates.add(j);
+                }
+            }
+            int l = 0;
+            while (l != candidates.size() && (RND.nextFloat() < EDGE_PROBABILITY)) {
+                final int x = candidates.get(l++);
+                graph.get(i).add(x);
+                graph.get(x).add(i);
+            }
+        }
+
+        List<Point> bestPoints = null;
+        List<Point> points;
+        int linesCount = 0;
+        int intersections = Integer.MAX_VALUE;
+        int minIntersections = Integer.MAX_VALUE;
+        for (int i = 0; i < MAX_ITERATIONS && intersections != 0; ++i) {
+            intersections = 0;
+            points = generatePoints(w, h, n);
+            Set<Line> lines = new HashSet<>(n * 2);
+            for (int j = 0; j < points.size(); ++j) {
+                List<Integer> others = graph.get(j);
+                for (int other : others) {
+                    lines.add(new Line(points.get(j), points.get(other)));
+                }
+            }
+            for (Line line : lines) {
+                for (Line other : lines) {
+                    if (line != other && line.intersects(other)) {
+                        ++intersections;
+                        if (Geom.interlaps(line, other)) {
+                            intersections += 100;
+                        }
+                    }
+                }
+            }
+            if (intersections < minIntersections) {
+                bestPoints = points;
+                minIntersections = intersections;
+                linesCount = lines.size();
+            }
+        }
+
+        Log.d(TAG, "# of lines :" + linesCount);
+        Log.d(TAG, "least # of intersections is :" + minIntersections);
+
+        final List<CandleModel> candles = new ArrayList<>(n);
+        for (Point point : bestPoints) {
+            candles.add(new CandleModel(point.getX(), point.getY()));
+        }
+
+        for (int i = 0; i < n; ++i) {
+            for (int j : graph.get(i)) {
+                candles.get(i).addNeighbour(candles.get(j));
+            }
+        }
+
+        final CandlePuzzle candlePuzzle = new CandlePuzzle(candles, w, h);
+
+        while (candlePuzzle.isSolved()) {
+            for (CandleModel candle : candles) {
+                if (RND.nextFloat() < INVERSE_PROBABILITY) {
+                    candle.inverseWithNeighbours();
+                }
+            }
+        }
+        return candlePuzzle;
+    }
+
+    private static List<Point> generatePoints(int w, int h, int n) {
+        final List<Point> result = new ArrayList<>(n);
+        final Set<Integer> rects = new TreeSet<>();
+
+        while (rects.size() < n) {
+            int k = RND.nextInt(w * h);
+            rects.add(k);
+        }
+
+        for (int k : rects) {
+            result.add(new Point(k % w, k / w));
+        }
+
+        return result;
+    }
+
 }

@@ -9,20 +9,28 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="6">
+        android:layout_weight="4">
 
         <Button
             android:id="@+id/game_help_btn"
             style="@style/GameOptionText"
-            android:layout_gravity="center_horizontal|left"
+            android:layout_gravity="top|left"
             android:background="@drawable/button_selector"
             android:enabled="false"
             android:text="@string/game_help_text" />
 
+        <Button
+            android:id="@+id/connect_btn"
+            style="@style/GameOptionText"
+            android:layout_gravity="top|center_horizontal"
+            android:background="@drawable/button_selector"
+            android:enabled="false"
+            android:text="@string/game_connect_text" />
+
         <TextView
             android:id="@+id/touch_counter"
             style="@style/GameCounterText"
-            android:layout_gravity="center" />
+            android:layout_gravity="bottom|center_horizontal" />
 
         <Button
             android:id="@+id/game_menu_btn"

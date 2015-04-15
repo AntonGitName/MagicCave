@@ -32,10 +32,7 @@ public class ResourceLoader {
     private static final int[] fireBitmapsIDs = {R.drawable.fire1, R.drawable.fire2, R.drawable.fire3,
             R.drawable.fire4, R.drawable.fire5, R.drawable.fire6, R.drawable.fire7, R.drawable.fire8, R.drawable.fire9,
             R.drawable.fire10, R.drawable.fire11, R.drawable.fire12};
-//    private static final int[] fireBitmapsIDs = {R.drawable.fire1, R.drawable.fire2, R.drawable.fire3,
-//            R.drawable.fire4, R.drawable.fire5, R.drawable.fire6, R.drawable.fire7, R.drawable.fire8, R.drawable.fire9,
-//            R.drawable.fire10, R.drawable.fire11, R.drawable.fire12, R.drawable.fire13, R.drawable.fire14,
-//            R.drawable.fire15};
+
     private final Typeface typeface;
     private final Bitmap[] fireBitmaps;
     private final Bitmap candleBitmap;
@@ -64,6 +61,41 @@ public class ResourceLoader {
 //        fireBitmaps = addMiddleStages(resources, fireBitmapsIDs);
 
         fireSizeRate = (float) fireBitmaps[0].getWidth() / (float) fireBitmaps[0].getHeight();
+    }
+
+    private static Bitmap[] addMiddleStages(final Resources res, final int[] bitmapIds) {
+        final List<Bitmap> result = new ArrayList<>(bitmapIds.length * 4);
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap prev = BitmapFactory.decodeResource(res, bitmapIds[0], options);
+        result.add(prev);
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        for (int i = 1; i < bitmapIds.length; ++i) {
+            final Bitmap next = BitmapFactory.decodeResource(res, bitmapIds[i], options);
+            final Bitmap mid2 = blendBitmaps(res, prev, next);
+            final Bitmap mid1 = blendBitmaps(res, prev, mid2);
+            final Bitmap mid3 = blendBitmaps(res, mid2, next);
+            result.add(mid1);
+            result.add(mid2);
+            result.add(mid3);
+            result.add(next);
+            prev = next;
+        }
+        return result.toArray(new Bitmap[result.size()]);
+    }
+
+    private static Bitmap blendBitmaps(final Resources res, final Bitmap base, final Bitmap blend) {
+        final Bitmap result = base.copy(Bitmap.Config.ARGB_8888, true);
+
+        Paint p = new Paint();
+        p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_ATOP));
+        p.setShader(new BitmapShader(blend, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+
+        Canvas c = new Canvas();
+        c.setBitmap(result);
+        c.drawBitmap(base, 0, 0, null);
+        c.drawRect(0, 0, base.getWidth(), base.getHeight(), p);
+
+        return result;
     }
 
     public Typeface getTypeface() {
@@ -142,40 +174,5 @@ public class ResourceLoader {
                     (int) (size.x / handSizeRate)));
             return getHandBitmap(adjustedSize);
         }
-    }
-
-    private static Bitmap[] addMiddleStages(final Resources res, final int[] bitmapIds) {
-        final List<Bitmap> result = new ArrayList<>(bitmapIds.length * 4);
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        Bitmap prev = BitmapFactory.decodeResource(res, bitmapIds[0], options);
-        result.add(prev);
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        for (int i = 1; i < bitmapIds.length; ++i) {
-            final Bitmap next =  BitmapFactory.decodeResource(res, bitmapIds[i], options);
-            final Bitmap mid2 = blendBitmaps(res, prev, next);
-            final Bitmap mid1 =  blendBitmaps(res, prev, mid2);
-            final Bitmap mid3 =  blendBitmaps(res, mid2, next);
-            result.add(mid1);
-            result.add(mid2);
-            result.add(mid3);
-            result.add(next);
-            prev = next;
-        }
-        return result.toArray(new Bitmap[result.size()]);
-    }
-
-    private static Bitmap blendBitmaps(final Resources res, final Bitmap base, final Bitmap blend) {
-        final Bitmap result = base.copy(Bitmap.Config.ARGB_8888, true);
-
-        Paint p = new Paint();
-        p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_ATOP));
-        p.setShader(new BitmapShader(blend, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
-
-        Canvas c = new Canvas();
-        c.setBitmap(result);
-        c.drawBitmap(base, 0, 0, null);
-        c.drawRect(0, 0, base.getWidth(), base.getHeight(), p);
-
-        return result;
     }
 }

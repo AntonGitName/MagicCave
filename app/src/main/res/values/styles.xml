@@ -47,7 +47,7 @@
 
     <style name="GameCounterText" parent="DefaultStyle">
         <item name="android:textColor">@color/game_counter_color</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="LevelText" parent="DefaultStyle">
