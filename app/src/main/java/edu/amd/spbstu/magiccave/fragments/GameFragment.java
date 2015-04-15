@@ -367,8 +367,10 @@ public class GameFragment extends Fragment implements OnHelpAnimationFinishedLis
                 if (firstCandleId == NOT_USED) {
                     firstCandleId = id;
                 } else {
-                    listener.OnCandlesConnected(firstCandleId, id);
-                    setIsConnecting(false);
+                    if (firstCandleId != id) {
+                        listener.OnCandlesConnected(firstCandleId, id);
+                        setIsConnecting(false);
+                    }
                 }
             } else {
                 addMoves(1);

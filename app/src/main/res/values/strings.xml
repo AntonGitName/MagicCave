@@ -14,7 +14,7 @@
     <string name="modes_label">Game modes</string>
     <string name="modes_text">You can choose between two different modes: the cave mode and the random mode. In the first one you will have to solve puzzles from nine different caves in order to get magic stars!=) In the second mode you will have a chance to try your best on a randomly generated puzzle. Be aware these puzzles might be not that simple to crack!</string>
     <string name="control_label">Controls</string>
-    <string name="control_text">You can change a state of a candle by simply touching over it. If you get stack, you can press button *Magic* and our super-duper algorithm will show you a few steps that will take you closer to a solution. You also can press menu button if you want to restart level or to get back to main menu.</string>
+    <string name="control_text">You can change a state of a candle by simply touching over it. If you get stack, you can press button *Magic* and our super-duper algorithm will show you the best solution and a some magic! You can try to guess some hidden connections between candles. To do so press button *Feel lucky!* and choose two candles. You also can press menu button if you want to restart level or to get back to main menu.</string>
 
     <!-- Game Fragment -->
     <string name="game_menu_btn">Menu</string>
